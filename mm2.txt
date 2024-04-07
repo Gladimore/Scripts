@@ -21,7 +21,6 @@ local GunDropGrabber = Instance.new("TextButton")
 local KillAll = Instance.new("TextButton")
 local MurdererESP = Instance.new("TextButton")
 local SherrifESP = Instance.new("TextButton")
-local ShowNames = Instance.new("TextButton")
 local TPtoMap = Instance.new("TextButton")
 local TPtoMuderer = Instance.new("TextButton")
 local TPtoSherrif = Instance.new("TextButton")
@@ -155,22 +154,6 @@ SherrifESP.TextScaled = true
 SherrifESP.TextSize = 18.000
 SherrifESP.TextStrokeTransparency = 0.000
 SherrifESP.TextWrapped = true
-
-ShowNames.Name = "ShowNames"
-ShowNames.Parent = Main
-ShowNames.AnchorPoint = Vector2.new(0.5, 0.5)
-ShowNames.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
-ShowNames.BorderColor3 = Color3.fromRGB(0, 0, 0)
-ShowNames.BorderSizePixel = 0
-ShowNames.Position = UDim2.new(0.742647111, 0, 0.158227831, 0)
-ShowNames.Size = UDim2.new(0.455882341, 0, 0.0632911399, 0)
-ShowNames.Font = Enum.Font.Fantasy
-ShowNames.Text = "Show Names"
-ShowNames.TextColor3 = Color3.fromRGB(255, 255, 255)
-ShowNames.TextScaled = true
-ShowNames.TextSize = 18.000
-ShowNames.TextStrokeTransparency = 0.000
-ShowNames.TextWrapped = true
 
 TPtoMap.Name = "TPtoMap"
 TPtoMap.Parent = Main
@@ -326,6 +309,22 @@ UICorner.Parent = Main
 UIAspectRatioConstraint.Parent = Main
 UIAspectRatioConstraint.AspectRatio = 0.764
 
+local Underline = Instance.new("Frame")
+local UICorner3 = Instance.new("UICorner")
+
+Underline.Name = "Underline"
+Underline.AnchorPoint = Vector2.new(0.5, 0.5)
+Underline.BackgroundColor3 = Color3.fromRGB(47, 255, 32)
+Underline.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Underline.BorderSizePixel = 0
+Underline.Position = UDim2.new(0.5, 0, 1, 0)
+Underline.Size = UDim2.new(0.990235329, 0, 0.112356931, 0)
+
+UICorner3.CornerRadius = UDim.new(1, 0)
+UICorner3.Parent = Underline
+
+--Properties:
+
 local uis = game:GetService('UserInputService')
 local starter_player = game:GetService('StarterPlayer')
 local st_gui = game:GetService('StarterGui')
@@ -339,6 +338,29 @@ ps_plr.CharacterAdded:Connect(function(chr)
 	ps_chr = chr
 	hum = chr:WaitForChild('Humanoid', 1) :: Humanoid or chr:FindFirstChildWhichIsA('Humanoid')
 end)
+
+local btns = {
+	CoinFarm, KillAll, SherrifESP, MurdererESP
+}
+
+local colors = {
+	[false] = Color3.fromRGB(255, 14, 14),
+	[true] = Color3.fromRGB(65, 255, 71)
+}
+
+for _, btn:TextButton in pairs(btns) do
+	local underline = Underline:Clone()
+	underline.Parent = btn
+	
+	local toggle = false
+	underline.BackgroundColor3 = colors[toggle]
+	
+	btn.Activated:Connect(function()
+		toggle = not toggle
+		underline.BackgroundColor3 = colors[toggle]
+	end)
+end -- I know this is inefficent
+Underline:Destroy()
 
 local root = ps_chr:WaitForChild('HumanoidRootPart', 1) :: BasePart
 
@@ -628,7 +650,6 @@ function SCRIPT_CTQL79_FAKESCRIPT() -- SherrifESP.SherrifESP
 		if toggle then
 			sendNoti({msg = "Finding Sheriff"})
 			for _, Plr in pairs(ps:GetPlayers()) do
-				local Bp = Plr.Backpack
 				if findItem(Plr, "Gun") then
 					local upper_torso = (Plr.Character or Plr.CharacterAdded:Wait()):WaitForChild('UpperTorso', 1)
 					if not upper_torso:FindFirstChild("BoxHandleAdornment") then
