@@ -483,12 +483,24 @@ function SCRIPT_ZSRN70_FAKESCRIPT() -- CoinFarm.CoinFarm
 				end
 
 				if coin:IsA('BasePart') and coin.Name == "Coin_Server" then
-					local info = TweenInfo.new(0.2)
+					local TS = game:GetService("TweenService")
+					local Info = TweenInfo.new(0.4) -- all defaults
 
-					local Animation = game:GetService('TweenService'):Create(ps_chr.PrimaryPart, info, {Position = coin.Position})
-					Animation:Play()
-					Animation.Completed:Wait() -- So you don't get kicked
+					local TV = Instance.new('CFrameValue')
 
+					local Tween = TS:Create(TV, Info, {Value = coin.CFrame})
+
+					TV.Value = ps_chr:GetPivot() -- assign initial position
+
+					local changed_con = TV.Changed:Connect(function()
+						ps_chr:PivotTo(TV.Value)
+					end)
+
+					Tween:Play()
+					Tween.Completed:Wait()
+					changed_con:Disconnect()
+					TV:Destroy()
+					
 					local con:RBXScriptConnection
 
 					coroutine.wrap(function()
