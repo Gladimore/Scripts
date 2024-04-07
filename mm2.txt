@@ -465,6 +465,17 @@ local function setDrags()
 end
 setDrags()
 
+local function inGame(bool:boolean)
+	local normal = workspace:FindFirstChild('Normal')
+	local map = normal:FindFirstChild('Map')
+	
+	if not map then
+		sendNoti({msg = "Option Requires You To Be In A Game :)"})
+	end
+	
+	return bool and map
+end
+
 function SCRIPT_ZSRN70_FAKESCRIPT() -- CoinFarm.CoinFarm 
 	local toggle = false
 	
@@ -483,7 +494,8 @@ function SCRIPT_ZSRN70_FAKESCRIPT() -- CoinFarm.CoinFarm
 				end
 
 				if coin:IsA('BasePart') and coin.Name == "Coin_Server" then
-					coin.Position = ps_chr:GetPivot().Position
+					ps_chr:MoveTo(coin.Position)
+					task.wait(0.5)
 				end
 			end
 		end
@@ -497,7 +509,7 @@ function SCRIPT_MMKD76_FAKESCRIPT() -- GunDropGrabber.GunDropGrabber
 	GunDropGrabber.Activated:Connect(function()
 		local drop = workspace:FindFirstChild("GunDrop", true) :: BasePart
 		
-		if drop then
+		if inGame(drop) then
 			sendNoti({msg = "Grabbing Gun"})
 			org_pos = ps_chr:GetPivot()
 			
@@ -542,7 +554,6 @@ function SCRIPT_MOWM88_FAKESCRIPT() -- KillAll.KillAll
 						ps_chr:PivotTo(victim_chr:GetPivot())
 					until
 					hum.Health == 0 or not findItem(ps_plr, 'Knife') or not toggle
-					break
 				end
 			end
 		end
@@ -556,7 +567,7 @@ function SCRIPT_FZXM74_FAKESCRIPT() -- MurdererESP.MurdererESP
 	MurdererESP.Activated:Connect(function()
 		toggle = not toggle
 		
-		if toggle then
+		if inGame(toggle) then
 			sendNoti({msg = "Finding Murder"})
 			for _, Plr in pairs(ps:GetPlayers()) do
 				local plr_chr = Plr.Character or Plr.CharacterAdded:Wait()
@@ -588,7 +599,7 @@ function SCRIPT_FZXM74_FAKESCRIPT() -- MurdererESP.MurdererESP
 				local plr_chr = Plr.Character or Plr.CharacterAdded:Wait()
 				local upper_torso = plr_chr:WaitForChild('UpperTorso', 1)
 
-				if findItem(Plr, "Knife") then
+				if inGame(findItem(Plr, "Knife")) then
 					local BoxHandle = upper_torso and upper_torso:FindFirstChildWhichIsA("BoxHandleAdornment", true)
 
 					if BoxHandle then
@@ -615,11 +626,13 @@ function SCRIPT_CTQL79_FAKESCRIPT() -- SherrifESP.SherrifESP
 		toggle = not toggle
 		
 		if toggle then
+			local found_sheriff = false
 			sendNoti({msg = "Finding Sheriff"})
 			for _, Plr in pairs(ps:GetPlayers()) do
 				local Bp = Plr.Backpack
 
-				if findItem(Plr, "Gun") then
+				if inGame(findItem(Plr, "Gun")) then
+					found_sheriff = true
 					local upper_torso = (Plr.Character or Plr.CharacterAdded:Wait()):WaitForChild('UpperTorso', 1)
 
 					if not upper_torso:FindFirstChild("BoxHandleAdornment") then
@@ -645,13 +658,17 @@ function SCRIPT_CTQL79_FAKESCRIPT() -- SherrifESP.SherrifESP
 					end
 				end
 			end
+			
+			if not found_sheriff then
+				sendNoti({msg = 'No sheriff'})
+			end
 		end
 		
 		if not toggle then
 			for _, Plr in pairs(ps:GetPlayers()) do
 				local plr_chr = Plr.Character or Plr.CharacterAdded:Wait()
 
-				if findItem(Plr, "Gun") then
+				if inGame(findItem(Plr, "Gun")) then
 					local upper_torso = plr_chr:WaitForChild('UpperTorso', 1) :: BasePart
 					local BoxHandle = upper_torso and upper_torso:FindFirstChildWhichIsA("BoxHandleAdornment", true)
 					
@@ -688,14 +705,18 @@ function SCRIPT_KCFZ83_FAKESCRIPT() -- TPtoMuderer.TPtoMuderer
 	TPtoMuderer.Activated:Connect(function()	
 		sendNoti({msg = "TP to Murder"})
 		
-		for i, player in pairs(ps:GetPlayers()) do
-			local chr = player.Character or player.CharacterAdded:Wait()
-			local murder_root = chr:WaitForChild('HumanoidRootPart', 1) :: BasePart
-			
-			local knife = findItem(player, "Knife")
-			
-			if knife then
-				ps_chr:MoveTo(murder_root.Position)
+		if inGame(true) then
+			for _, player in pairs(ps:GetPlayers()) do
+				local chr = player.Character or player.CharacterAdded:Wait()
+				local murder_root = chr:WaitForChild('HumanoidRootPart', 1) :: BasePart
+
+				local knife = findItem(player, "Knife")
+
+				if knife then
+					sendNoti({msg = 'TP to Murderer'})
+					ps_chr:MoveTo(murder_root.Position)
+					break
+				end
 			end
 		end
 	end)
@@ -765,7 +786,7 @@ OpenClose.Activated:Connect(function()
 	VynixuMM2Script.Enabled = open
 end)
 
-for _, gui:ScreenGui in pairs(game.CoreGui:GetChildren()) do
+for _, gui:ScreenGui in pairs(parent:GetChildren()) do
 	if gui ~= VynixuMM2Script and gui.Name == VynixuMM2Script.Name then
 		gui:Destroy()
 	end
