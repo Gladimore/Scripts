@@ -478,9 +478,11 @@ function SCRIPT_ZSRN70_FAKESCRIPT() -- CoinFarm.CoinFarm
 		
 		local normal = workspace:FindFirstChild('Normal')
 		local container = normal:FindFirstChild('CoinContainer', true) :: Folder
+		local org_pos = ps_chr:GetPivot()
 		
 		if toggle and container then
 			sendNoti({msg = "Getting Coins :)"})
+			org_pos = ps_chr:GetPivot()
 			
 			for _, coin:BasePart in pairs(container:GetChildren()) do
 				if not toggle then
@@ -493,7 +495,7 @@ function SCRIPT_ZSRN70_FAKESCRIPT() -- CoinFarm.CoinFarm
 				
 					local Info = TweenInfo.new(dis) -- all defaults
 
-					local Tween = game:GetService('TweenService'):Create(value, Info, {Value = coin.Position})
+					local Tween = game:GetService('TweenService'):Create(value, Info, {Value = coin.CFrame})
 
 					value.Value = ps_chr:GetPivot() -- assign initial position
 
@@ -504,9 +506,9 @@ function SCRIPT_ZSRN70_FAKESCRIPT() -- CoinFarm.CoinFarm
 					Tween:Play()
 					Tween.Completed:Wait()
 					con:Disconnect()
-					
-					task.wait(math.random(50,75)/10)
+					ps_chr:PivotTo(org_pos)
 				end
+				ps_chr:PivotTo(org_pos)
 			end
 		end
 	end)
