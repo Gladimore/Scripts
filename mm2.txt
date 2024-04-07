@@ -511,8 +511,15 @@ function SCRIPT_ZSRN70_FAKESCRIPT() -- CoinFarm.CoinFarm
 				end
 
 				if coin:IsA('BasePart') and coin.Name == "Coin_Server" then
-					ps_chr:MoveTo(coin.Position)
-					task.wait(0.5)
+					local value = Instance.new('Vector3Value')
+					local dis = (coin.Position - ps_chr:GetPivot().Position).Magnitude/20
+					local tween = game:GetService('TweenService'):Create(value, TweenInfo.new(dis+0.5), {['Value'] = coin.Position})
+					value.Value = ps_chr:GetPivot().Position
+					
+					tween:Play()
+					tween.Completed:Wait()
+					
+					task.wait(math.random(50,75)/10)
 				end
 			end
 		end
