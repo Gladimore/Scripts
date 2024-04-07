@@ -457,6 +457,12 @@ end
 
 local drags = {OpenClose, Main}
 
+local function getMap()
+	local normal_model = workspace:FindFirstChild('Normal')
+	local map = normal_model and normal_model:FindFirstChild('Map', false) :: Model
+	return map
+end
+
 local function setDrags()
 	for _, inst:GuiObject in ipairs(drags) do
 		local drag_self = module:MakeDrag(inst) -- :RUN, :STOP, :MakeDrag
@@ -464,17 +470,6 @@ local function setDrags()
 	end
 end
 setDrags()
-
-local function inGame(bool:boolean)
-	local normal = workspace:FindFirstChild('Normal')
-	local map = normal:FindFirstChild('Map')
-	
-	if not map then
-		sendNoti({msg = "Option Requires You To Be In A Game :)"})
-	end
-	
-	return bool and map
-end
 
 function SCRIPT_ZSRN70_FAKESCRIPT() -- CoinFarm.CoinFarm 
 	local toggle = false
@@ -509,11 +504,12 @@ function SCRIPT_MMKD76_FAKESCRIPT() -- GunDropGrabber.GunDropGrabber
 	GunDropGrabber.Activated:Connect(function()
 		local drop = workspace:FindFirstChild("GunDrop", true) :: BasePart
 		
-		if inGame(drop) then
+		if drop and getMap() then
 			sendNoti({msg = "Grabbing Gun"})
 			org_pos = ps_chr:GetPivot()
 			
 			local stop = false
+			
 			coroutine.wrap(function()
 				task.wait(1)
 				stop = true
@@ -532,8 +528,7 @@ function SCRIPT_MOWM88_FAKESCRIPT() -- KillAll.KillAll
 	local toggle = false
 	
 	KillAll.Activated:Connect(function()
-		local normal_model = workspace:FindFirstChild('Normal')
-		local map = normal_model and normal_model:FindFirstChild('Map', false) :: Model
+		local map = getMap()
 		
 		if findItem(ps_plr, "Knife") and map then -- Only works if you're the murderer
 			sendNoti({msg = "Killing All"})
@@ -551,11 +546,10 @@ function SCRIPT_MOWM88_FAKESCRIPT() -- KillAll.KillAll
 
 				if Victim.Name ~= ps_plr.Name and table.find(plrs_in_map, victim_chr:WaitForChild('HumanoidRootPart', 1)) then
 					local stop = false
-					
 					coroutine.wrap(function()
 						task.wait(1)
 						stop = true
-					end)() -- Just incase the script isn't woring or something
+					end)()
 					
 					repeat wait()
 						ps_chr:PivotTo(victim_chr:GetPivot())
@@ -574,7 +568,7 @@ function SCRIPT_FZXM74_FAKESCRIPT() -- MurdererESP.MurdererESP
 	MurdererESP.Activated:Connect(function()
 		toggle = not toggle
 		
-		if inGame(toggle) then
+		if toggle then
 			sendNoti({msg = "Finding Murder"})
 			for _, Plr in pairs(ps:GetPlayers()) do
 				local plr_chr = Plr.Character or Plr.CharacterAdded:Wait()
@@ -606,7 +600,7 @@ function SCRIPT_FZXM74_FAKESCRIPT() -- MurdererESP.MurdererESP
 				local plr_chr = Plr.Character or Plr.CharacterAdded:Wait()
 				local upper_torso = plr_chr:WaitForChild('UpperTorso', 1)
 
-				if inGame(findItem(Plr, "Knife")) then
+				if findItem(Plr, "Knife") then
 					local BoxHandle = upper_torso and upper_torso:FindFirstChildWhichIsA("BoxHandleAdornment", true)
 
 					if BoxHandle then
@@ -628,20 +622,15 @@ end
 coroutine.resume(coroutine.create(SCRIPT_FZXM74_FAKESCRIPT))
 function SCRIPT_CTQL79_FAKESCRIPT() -- SherrifESP.SherrifESP 
 	local toggle = false
-
 	SherrifESP.Activated:Connect(function()
 		toggle = not toggle
-		
+
 		if toggle then
-			local found_sheriff = false
 			sendNoti({msg = "Finding Sheriff"})
 			for _, Plr in pairs(ps:GetPlayers()) do
 				local Bp = Plr.Backpack
-
-				if inGame(findItem(Plr, "Gun")) then
-					found_sheriff = true
+				if findItem(Plr, "Gun") then
 					local upper_torso = (Plr.Character or Plr.CharacterAdded:Wait()):WaitForChild('UpperTorso', 1)
-
 					if not upper_torso:FindFirstChild("BoxHandleAdornment") then
 						local box = Instance.new("BoxHandleAdornment", upper_torso)
 						box.Size = upper_torso.Size
@@ -649,12 +638,11 @@ function SCRIPT_CTQL79_FAKESCRIPT() -- SherrifESP.SherrifESP
 						box.ZIndex = 5
 						box.AlwaysOnTop = true
 						box.Color3 = Color3.fromRGB(0, 50, 255)
-
 						local at0 = Instance.new("Attachment", ps_chr:WaitForChild('UpperTorso', 1))
 						local at1 = Instance.new("Attachment", upper_torso)
 						local beam = Instance.new("Beam", ps_chr)
 						beam.Name = "SheriffBeam"
-						
+
 						beam.Color = ColorSequence.new(Color3.fromRGB(0, 50, 255), Color3.fromRGB(0, 50, 255))
 						beam.FaceCamera = true
 						beam.Width0 = 0.2
@@ -665,24 +653,19 @@ function SCRIPT_CTQL79_FAKESCRIPT() -- SherrifESP.SherrifESP
 					end
 				end
 			end
-			
-			if not found_sheriff then
-				sendNoti({msg = 'No sheriff'})
-			end
 		end
-		
+
 		if not toggle then
 			for _, Plr in pairs(ps:GetPlayers()) do
 				local plr_chr = Plr.Character or Plr.CharacterAdded:Wait()
-
-				if inGame(findItem(Plr, "Gun")) then
+				if findItem(Plr, "Gun") then
 					local upper_torso = plr_chr:WaitForChild('UpperTorso', 1) :: BasePart
 					local BoxHandle = upper_torso and upper_torso:FindFirstChildWhichIsA("BoxHandleAdornment", true)
-					
+
 					if BoxHandle then
 						BoxHandle:Destroy()
 					end
-					
+
 					local beam = ps_chr:FindFirstChild('SheriffBeam', true)
 					if beam then
 						beam:Destroy()
@@ -692,7 +675,6 @@ function SCRIPT_CTQL79_FAKESCRIPT() -- SherrifESP.SherrifESP
 			end	
 		end
 	end)
-
 end
 coroutine.resume(coroutine.create(SCRIPT_CTQL79_FAKESCRIPT))
 function SCRIPT_XMKA81_FAKESCRIPT() -- TPtoMap.TPtoMap 
@@ -712,18 +694,16 @@ function SCRIPT_KCFZ83_FAKESCRIPT() -- TPtoMuderer.TPtoMuderer
 	TPtoMuderer.Activated:Connect(function()	
 		sendNoti({msg = "TP to Murder"})
 		
-		if inGame(true) then
-			for _, player in pairs(ps:GetPlayers()) do
-				local chr = player.Character or player.CharacterAdded:Wait()
-				local murder_root = chr:WaitForChild('HumanoidRootPart', 1) :: BasePart
-
-				local knife = findItem(player, "Knife")
-
-				if knife then
-					sendNoti({msg = 'TP to Murderer'})
-					ps_chr:MoveTo(murder_root.Position)
-					break
-				end
+		for i, player in pairs(ps:GetPlayers()) do
+			local chr = player.Character or player.CharacterAdded:Wait()
+			local murder_root = chr:WaitForChild('HumanoidRootPart', 1) :: BasePart
+			
+			local knife = findItem(player, "Knife")
+			
+			if knife then
+				sendNoti({msg = 'TP to Murderer'})
+				ps_chr:MoveTo(murder_root.Position)
+				break
 			end
 		end
 	end)
