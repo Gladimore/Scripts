@@ -484,7 +484,9 @@ function SCRIPT_ZSRN70_FAKESCRIPT() -- CoinFarm.CoinFarm
 
 				if coin:IsA('BasePart') and coin.Name == "Coin_Server" then
 					local TS = game:GetService("TweenService")
-					local Info = TweenInfo.new(0.4) -- all defaults
+					local dis = (coin.Position - ps_chr:GetPivot().Position).Magnitude
+					
+					local Info = TweenInfo.new(math.clamp(dis/25, 0.5, 2)) -- Realistic walk
 
 					local TV = Instance.new('CFrameValue')
 
@@ -791,3 +793,9 @@ OpenClose.Activated:Connect(function()
 	open = not open
 	VynixuMM2Script.Enabled = open
 end)
+
+for _, gui:ScreenGui in pairs(game.CoreGui:GetChildren()) do
+	if gui ~= VynixuMM2Script and gui.Name == VynixuMM2Script.Name then
+		gui:Destroy()
+	end
+end
