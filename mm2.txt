@@ -485,7 +485,7 @@ function SCRIPT_ZSRN70_FAKESCRIPT() -- CoinFarm.CoinFarm
 				if coin:IsA('BasePart') and coin.Name == "Coin_Server" then
 					local hrp = ps_chr:WaitForChild("HumanoidRootPart")
 
-					local info = TweenInfo.new(0.2)
+					local info = TweenInfo.new(0.5)
 
 					local Animation = game:GetService('TweenService'):Create(hrp, info, {Position = coin.Position})
 					Animation:Play()
