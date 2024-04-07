@@ -483,34 +483,7 @@ function SCRIPT_ZSRN70_FAKESCRIPT() -- CoinFarm.CoinFarm
 				end
 
 				if coin:IsA('BasePart') and coin.Name == "Coin_Server" then
-					local TS = game:GetService("TweenService")
-					local dis = (coin.Position - ps_chr:GetPivot().Position).Magnitude
-					
-					local Info = TweenInfo.new(math.clamp(dis/25, 0.5, 2)) -- Realistic walk
-
-					local TV = Instance.new('CFrameValue')
-
-					local Tween = TS:Create(TV, Info, {Value = coin.CFrame})
-
-					TV.Value = ps_chr:GetPivot() -- assign initial position
-
-					local changed_con = TV.Changed:Connect(function()
-						ps_chr:PivotTo(TV.Value)
-					end)
-
-					Tween:Play()
-					Tween.Completed:Wait()
-					changed_con:Disconnect()
-					TV:Destroy()
-					
-					local con:RBXScriptConnection
-
-					coroutine.wrap(function()
-						task.wait(1)
-						con:Disconnect()
-					end)() -- Incase the script gets stuck or something
-
-					con = coin.TouchEnded:Wait()
+					coin.Position = ps_chr:GetPivot().Position
 				end
 			end
 		end
