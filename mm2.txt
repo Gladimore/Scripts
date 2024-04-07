@@ -516,8 +516,12 @@ function SCRIPT_ZSRN70_FAKESCRIPT() -- CoinFarm.CoinFarm
 					local tween = game:GetService('TweenService'):Create(value, TweenInfo.new(dis+0.5), {['Value'] = coin.Position})
 					value.Value = ps_chr:GetPivot().Position
 					
+					local value_con = value.Changed:Connect(function()
+						ps_chr:PivotTo(value.Valuea)
+					end)
 					tween:Play()
 					tween.Completed:Wait()
+					value_con:Disconnect()
 					
 					task.wait(math.random(50,75)/10)
 				end
