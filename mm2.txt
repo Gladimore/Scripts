@@ -1,0 +1,757 @@
+-- Made by kyler_josiah, btw the dude who orginally made the sucks at scripting, bro used basically no variables, his code is so sloppy. (I would have had fixed it, but I don't feel like fixing it all)
+-- Update I fixed it all :(
+
+-- Gui to Lua
+-- Version: 3.2
+
+-- Instances:
+
+local VynixuMM2Script = Instance.new("ScreenGui")
+VynixuMM2Script.Name = "VynixuMM2Script"
+VynixuMM2Script.ResetOnSpawn = false
+VynixuMM2Script.IgnoreGuiInset = true
+
+local st = Instance.new('ScreenGui')
+st.IgnoreGuiInset = true
+st.ResetOnSpawn = false
+
+local Main = Instance.new("Frame")
+local CoinFarm = Instance.new("TextButton")
+local GunDropGrabber = Instance.new("TextButton")
+local KillAll = Instance.new("TextButton")
+local MurdererESP = Instance.new("TextButton")
+local SherrifESP = Instance.new("TextButton")
+local ShowNames = Instance.new("TextButton")
+local TPtoMap = Instance.new("TextButton")
+local TPtoMuderer = Instance.new("TextButton")
+local TPtoSherrif = Instance.new("TextButton")
+local Walkspeed = Instance.new("TextButton")
+local JumpPower = Instance.new("TextButton")
+local WSInput = Instance.new("TextBox")
+local JPInput = Instance.new("TextBox")
+local WSReset = Instance.new("TextButton")
+local JPReset = Instance.new("TextButton")
+local UICorner = Instance.new("UICorner")
+local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+
+local OpenClose = Instance.new("TextButton")
+local UICorner2 = Instance.new("UICorner")
+local UI_Stroke = Instance.new('UIStroke')
+
+--Properties:
+
+OpenClose.Name = "OpenClose"
+OpenClose.Parent = st
+OpenClose.AnchorPoint = Vector2.new(0.5, 0.5)
+OpenClose.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+OpenClose.BackgroundTransparency = 1.000
+OpenClose.BorderColor3 = Color3.fromRGB(0, 0, 0)
+OpenClose.BorderSizePixel = 0
+OpenClose.Position = UDim2.new(0.0777777806, 0, 0.5, 0)
+OpenClose.Size = UDim2.new(0.0925925896, 0, 0.205761313, 0)
+OpenClose.Font = Enum.Font.Gotham
+OpenClose.Text = "Close/Open"
+OpenClose.TextColor3 = Color3.fromRGB(255, 255, 255)
+OpenClose.TextScaled = true
+OpenClose.TextSize = 14.000
+OpenClose.TextStrokeTransparency = 0.000
+OpenClose.TextWrapped = true
+
+UI_Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+UI_Stroke.Color = Color3.fromRGB(0,0,0)
+UI_Stroke.Thickness = 2
+UI_Stroke.Transparency = 0.38
+UI_Stroke.LineJoinMode = Enum.LineJoinMode.Miter
+UI_Stroke.Parent = OpenClose
+
+UICorner2.CornerRadius = UDim.new(0.100000001, 0)
+UICorner2.Parent = OpenClose
+
+Main.Name = "Main"
+Main.Parent = VynixuMM2Script
+Main.AnchorPoint = Vector2.new(0.5, 0.5)
+Main.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+Main.BorderSizePixel = 0
+Main.Position = UDim2.new(0.865740716, 0, 0.63786006, 0)
+Main.Size = UDim2.new(0.23888889, 0, 0.578696609, 0)
+Main.ZIndex = 0
+
+CoinFarm.Name = "CoinFarm"
+CoinFarm.Parent = Main
+CoinFarm.AnchorPoint = Vector2.new(0.5, 0.5)
+CoinFarm.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+CoinFarm.BorderColor3 = Color3.fromRGB(0, 0, 0)
+CoinFarm.BorderSizePixel = 0
+CoinFarm.Position = UDim2.new(0.257352948, 0, 0.158227831, 0)
+CoinFarm.Size = UDim2.new(0.455882341, 0, 0.0632911399, 0)
+CoinFarm.Font = Enum.Font.Fantasy
+CoinFarm.Text = "Coin Farm (x40)"
+CoinFarm.TextColor3 = Color3.fromRGB(255, 255, 255)
+CoinFarm.TextScaled = true
+CoinFarm.TextSize = 18.000
+CoinFarm.TextStrokeTransparency = 0.000
+CoinFarm.TextWrapped = true
+
+GunDropGrabber.Name = "GunDropGrabber"
+GunDropGrabber.Parent = Main
+GunDropGrabber.AnchorPoint = Vector2.new(0.5, 0.5)
+GunDropGrabber.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+GunDropGrabber.BorderColor3 = Color3.fromRGB(0, 0, 0)
+GunDropGrabber.BorderSizePixel = 0
+GunDropGrabber.Position = UDim2.new(0.257352948, 0, 0.259493679, 0)
+GunDropGrabber.Size = UDim2.new(0.455882341, 0, 0.0632911399, 0)
+GunDropGrabber.Font = Enum.Font.Fantasy
+GunDropGrabber.Text = "Gun Grabber"
+GunDropGrabber.TextColor3 = Color3.fromRGB(255, 255, 255)
+GunDropGrabber.TextScaled = true
+GunDropGrabber.TextSize = 18.000
+GunDropGrabber.TextStrokeTransparency = 0.000
+GunDropGrabber.TextWrapped = true
+
+KillAll.Name = "KillAll"
+KillAll.Parent = Main
+KillAll.AnchorPoint = Vector2.new(0.5, 0.5)
+KillAll.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+KillAll.BorderColor3 = Color3.fromRGB(0, 0, 0)
+KillAll.BorderSizePixel = 0
+KillAll.Position = UDim2.new(0.742647111, 0, 0.360759526, 0)
+KillAll.Size = UDim2.new(0.455882341, 0, 0.0632911399, 0)
+KillAll.Font = Enum.Font.Fantasy
+KillAll.Text = "Kill All"
+KillAll.TextColor3 = Color3.fromRGB(255, 255, 255)
+KillAll.TextScaled = true
+KillAll.TextSize = 18.000
+KillAll.TextStrokeTransparency = 0.000
+KillAll.TextWrapped = true
+
+MurdererESP.Name = "MurdererESP"
+MurdererESP.Parent = Main
+MurdererESP.AnchorPoint = Vector2.new(0.5, 0.5)
+MurdererESP.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+MurdererESP.BorderColor3 = Color3.fromRGB(0, 0, 0)
+MurdererESP.BorderSizePixel = 0
+MurdererESP.Position = UDim2.new(0.257352948, 0, 0.0569620207, 0)
+MurdererESP.Size = UDim2.new(0.455882341, 0, 0.0632911399, 0)
+MurdererESP.Font = Enum.Font.Fantasy
+MurdererESP.Text = "Murderer ESP"
+MurdererESP.TextColor3 = Color3.fromRGB(255, 255, 255)
+MurdererESP.TextScaled = true
+MurdererESP.TextSize = 18.000
+MurdererESP.TextStrokeTransparency = 0.000
+MurdererESP.TextWrapped = true
+
+SherrifESP.Name = "SherrifESP"
+SherrifESP.Parent = Main
+SherrifESP.AnchorPoint = Vector2.new(0.5, 0.5)
+SherrifESP.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+SherrifESP.BorderColor3 = Color3.fromRGB(0, 0, 0)
+SherrifESP.BorderSizePixel = 0
+SherrifESP.Position = UDim2.new(0.742647111, 0, 0.0569620207, 0)
+SherrifESP.Size = UDim2.new(0.455882341, 0, 0.0632911399, 0)
+SherrifESP.Font = Enum.Font.Fantasy
+SherrifESP.Text = "Sherrif ESP"
+SherrifESP.TextColor3 = Color3.fromRGB(255, 255, 255)
+SherrifESP.TextScaled = true
+SherrifESP.TextSize = 18.000
+SherrifESP.TextStrokeTransparency = 0.000
+SherrifESP.TextWrapped = true
+
+ShowNames.Name = "ShowNames"
+ShowNames.Parent = Main
+ShowNames.AnchorPoint = Vector2.new(0.5, 0.5)
+ShowNames.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+ShowNames.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ShowNames.BorderSizePixel = 0
+ShowNames.Position = UDim2.new(0.742647111, 0, 0.158227831, 0)
+ShowNames.Size = UDim2.new(0.455882341, 0, 0.0632911399, 0)
+ShowNames.Font = Enum.Font.Fantasy
+ShowNames.Text = "Show Names"
+ShowNames.TextColor3 = Color3.fromRGB(255, 255, 255)
+ShowNames.TextScaled = true
+ShowNames.TextSize = 18.000
+ShowNames.TextStrokeTransparency = 0.000
+ShowNames.TextWrapped = true
+
+TPtoMap.Name = "TPtoMap"
+TPtoMap.Parent = Main
+TPtoMap.AnchorPoint = Vector2.new(0.5, 0.5)
+TPtoMap.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+TPtoMap.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TPtoMap.BorderSizePixel = 0
+TPtoMap.Position = UDim2.new(0.742647111, 0, 0.90807879, 0)
+TPtoMap.Size = UDim2.new(0.455882341, 0, 0.0632911399, 0)
+TPtoMap.Font = Enum.Font.Fantasy
+TPtoMap.Text = "TP to Lobby"
+TPtoMap.TextColor3 = Color3.fromRGB(255, 255, 255)
+TPtoMap.TextScaled = true
+TPtoMap.TextSize = 18.000
+TPtoMap.TextStrokeTransparency = 0.000
+TPtoMap.TextWrapped = true
+
+TPtoMuderer.Name = "TPtoMuderer"
+TPtoMuderer.Parent = Main
+TPtoMuderer.AnchorPoint = Vector2.new(0.5, 0.5)
+TPtoMuderer.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+TPtoMuderer.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TPtoMuderer.BorderSizePixel = 0
+TPtoMuderer.Position = UDim2.new(0.742647111, 0, 0.806813002, 0)
+TPtoMuderer.Size = UDim2.new(0.455882341, 0, 0.0632911399, 0)
+TPtoMuderer.Font = Enum.Font.Fantasy
+TPtoMuderer.Text = "TP to Murderer"
+TPtoMuderer.TextColor3 = Color3.fromRGB(255, 255, 255)
+TPtoMuderer.TextScaled = true
+TPtoMuderer.TextSize = 18.000
+TPtoMuderer.TextStrokeTransparency = 0.000
+TPtoMuderer.TextWrapped = true
+
+TPtoSherrif.Name = "TPtoSherrif"
+TPtoSherrif.Parent = Main
+TPtoSherrif.AnchorPoint = Vector2.new(0.5, 0.5)
+TPtoSherrif.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+TPtoSherrif.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TPtoSherrif.BorderSizePixel = 0
+TPtoSherrif.Position = UDim2.new(0.257352948, 0, 0.90807879, 0)
+TPtoSherrif.Size = UDim2.new(0.455882341, 0, 0.0632911399, 0)
+TPtoSherrif.Font = Enum.Font.Fantasy
+TPtoSherrif.Text = "TP to Sherrif"
+TPtoSherrif.TextColor3 = Color3.fromRGB(255, 255, 255)
+TPtoSherrif.TextScaled = true
+TPtoSherrif.TextSize = 18.000
+TPtoSherrif.TextStrokeTransparency = 0.000
+TPtoSherrif.TextWrapped = true
+
+Walkspeed.Name = "Walkspeed"
+Walkspeed.Parent = Main
+Walkspeed.AnchorPoint = Vector2.new(0.5, 0.5)
+Walkspeed.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+Walkspeed.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Walkspeed.BorderSizePixel = 0
+Walkspeed.Position = UDim2.new(0.257352948, 0, 0.462025315, 0)
+Walkspeed.Size = UDim2.new(0.455882341, 0, 0.0632911399, 0)
+Walkspeed.Font = Enum.Font.Fantasy
+Walkspeed.Text = "Set WalkSpeed"
+Walkspeed.TextColor3 = Color3.fromRGB(255, 255, 255)
+Walkspeed.TextScaled = true
+Walkspeed.TextSize = 18.000
+Walkspeed.TextStrokeTransparency = 0.000
+Walkspeed.TextWrapped = true
+
+JumpPower.Name = "JumpPower"
+JumpPower.Parent = Main
+JumpPower.AnchorPoint = Vector2.new(0.5, 0.5)
+JumpPower.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+JumpPower.BorderColor3 = Color3.fromRGB(0, 0, 0)
+JumpPower.BorderSizePixel = 0
+JumpPower.Position = UDim2.new(0.257352948, 0, 0.563291192, 0)
+JumpPower.Size = UDim2.new(0.455882341, 0, 0.0632911399, 0)
+JumpPower.Font = Enum.Font.Fantasy
+JumpPower.Text = "Set JumpPower"
+JumpPower.TextColor3 = Color3.fromRGB(255, 255, 255)
+JumpPower.TextScaled = true
+JumpPower.TextSize = 18.000
+JumpPower.TextStrokeTransparency = 0.000
+JumpPower.TextWrapped = true
+
+WSInput.Name = "WSInput"
+WSInput.Parent = Main
+WSInput.AnchorPoint = Vector2.new(0.5, 0.5)
+WSInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+WSInput.BackgroundTransparency = 1.000
+WSInput.BorderSizePixel = 0
+WSInput.Position = UDim2.new(0.661764741, 0, 0.462025315, 0)
+WSInput.Size = UDim2.new(0.294117659, 0, 0.0632911399, 0)
+WSInput.Font = Enum.Font.Fantasy
+WSInput.PlaceholderColor3 = Color3.fromRGB(124, 124, 124)
+WSInput.PlaceholderText = "WS Input"
+WSInput.Text = ""
+WSInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+WSInput.TextScaled = true
+WSInput.TextSize = 18.000
+WSInput.TextStrokeTransparency = 0.000
+WSInput.TextWrapped = true
+
+JPInput.Name = "JPInput"
+JPInput.Parent = Main
+JPInput.AnchorPoint = Vector2.new(0.5, 0.5)
+JPInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+JPInput.BackgroundTransparency = 1.000
+JPInput.BorderSizePixel = 0
+JPInput.Position = UDim2.new(0.661764741, 0, 0.563291192, 0)
+JPInput.Size = UDim2.new(0.294117659, 0, 0.0632911399, 0)
+JPInput.Font = Enum.Font.Fantasy
+JPInput.PlaceholderColor3 = Color3.fromRGB(124, 124, 124)
+JPInput.PlaceholderText = "JP Input"
+JPInput.Text = ""
+JPInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+JPInput.TextScaled = true
+JPInput.TextSize = 18.000
+JPInput.TextStrokeTransparency = 0.000
+JPInput.TextWrapped = true
+
+WSReset.Name = "WSReset"
+WSReset.Parent = Main
+WSReset.AnchorPoint = Vector2.new(0.5, 0.5)
+WSReset.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+WSReset.BorderColor3 = Color3.fromRGB(0, 0, 0)
+WSReset.BorderSizePixel = 0
+WSReset.Position = UDim2.new(0.897058785, 0, 0.462025315, 0)
+WSReset.Size = UDim2.new(0.14705883, 0, 0.0632911399, 0)
+WSReset.Font = Enum.Font.Fantasy
+WSReset.Text = "Reset"
+WSReset.TextColor3 = Color3.fromRGB(255, 255, 255)
+WSReset.TextScaled = true
+WSReset.TextSize = 18.000
+WSReset.TextStrokeTransparency = 0.000
+WSReset.TextWrapped = true
+
+JPReset.Name = "JPReset"
+JPReset.Parent = Main
+JPReset.AnchorPoint = Vector2.new(0.5, 0.5)
+JPReset.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+JPReset.BorderColor3 = Color3.fromRGB(0, 0, 0)
+JPReset.BorderSizePixel = 0
+JPReset.Position = UDim2.new(0.897058785, 0, 0.563291192, 0)
+JPReset.Size = UDim2.new(0.14705883, 0, 0.0632911399, 0)
+JPReset.Font = Enum.Font.Fantasy
+JPReset.Text = "Reset"
+JPReset.TextColor3 = Color3.fromRGB(255, 255, 255)
+JPReset.TextScaled = true
+JPReset.TextSize = 18.000
+JPReset.TextStrokeTransparency = 0.000
+JPReset.TextWrapped = true
+
+UICorner.CornerRadius = UDim.new(0.0299999993, 0)
+UICorner.Parent = Main
+
+UIAspectRatioConstraint.Parent = Main
+UIAspectRatioConstraint.AspectRatio = 0.764
+
+local uis = game:GetService('UserInputService')
+local starter_player = game:GetService('StarterPlayer')
+local st_gui = game:GetService('StarterGui')
+local ps = game:GetService('Players')
+
+local ps_plr = ps.LocalPlayer or ps.PlayerAdded:Wait()
+local ps_chr = ps_plr.Character or ps_plr.CharacterAdded:Wait()
+local hum = ps_chr:WaitForChild('Humanoid', 1) :: Humanoid or ps_chr:FindFirstChildWhichIsA('Humanoid')
+
+ps_plr.CharacterAdded:Connect(function(chr)
+	ps_chr = chr
+	hum = chr:WaitForChild('Humanoid', 1) :: Humanoid or chr:FindFirstChildWhichIsA('Humanoid')
+end)
+
+local root = ps_chr:WaitForChild('HumanoidRootPart', 1) :: BasePart
+
+local mouse = ps_plr:GetMouse()
+
+local function findItem(plr:Player, itemName:string)
+	return plr.Backpack:FindFirstChild(itemName, true) or (plr.Character or plr.CharacterAdded:Wait()):FindFirstChild(itemName)
+end
+
+local function sendNoti(data:{msg:string, title:string, duration:number})
+	local msg, title, duration = data.msg, data.title, data.duration
+	
+	title = title or "MM2 Script"
+	duration = tonumber(duration) or 3
+	
+	st_gui:SetCore("SendNotification", {
+		['Title'] = title,
+		['Text'] = msg,
+		['Icon'] = "http://www.roblox.com/asset/?id=817367645",
+		['Duration'] = duration
+	})	
+end
+
+local module = {}
+
+module.conections = {}
+
+function stopConnection(gui_obj:GuiObject)
+	if gui_obj and gui_obj:IsA('GuiObject') then
+		for _, connection:RBXScriptConnection in ipairs(module.conections[gui_obj]) do
+			pcall(function()
+				if typeof(connection) == "RBXScriptConnection" then
+					connection:Disconnect()
+				end
+			end)
+		end
+		table.clear(module.conections[gui_obj])
+	end
+end
+
+function module:STOP()
+	local gui = self._gui :: GuiObject
+	local connections = gui and gui:IsA('GuiObject') and module.conections[gui]
+
+	if connections then
+		stopConnection(gui)
+	else
+		warn('Invalid')
+	end
+end
+
+function module:RUN()
+	local gui = self._gui :: GuiObject
+
+	if gui and gui:IsA('GuiObject') then
+		module.conections[gui] = module.conections[gui] or {}
+		stopConnection(gui)
+
+		local dragging
+		local dragInput
+		local dragStart
+		local startPos
+
+		local function update(input)
+			local delta = input.Position - dragStart
+			gui.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		end
+
+		table.insert(module.conections[gui], gui.InputBegan:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+				dragging = true
+				dragStart = input.Position
+				startPos = gui.Position
+
+				input.Changed:Connect(function()
+					if input.UserInputState == Enum.UserInputState.End then
+						dragging = false
+					end
+				end)
+			end
+		end))
+
+		table.insert(module.conections[gui], gui.InputChanged:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+				dragInput = input
+			end
+		end))
+
+		table.insert(module.conections[gui], uis.InputChanged:Connect(function(input)
+			if input == dragInput and dragging then
+				update(input)
+			end
+		end))
+
+	end
+end
+
+function module:MakeDrag(gui:GuiObject)
+	local self = {
+		_gui = gui
+	}
+	setmetatable(self, {
+		__index = function(tbl, key)
+			local func = module[string.upper(key)]
+
+			if func then
+				return func
+			end
+
+			print(tbl, key)
+		end,
+	})
+
+	return self
+end
+
+local drags = {OpenClose, Main}
+
+local function setDrags()
+	for _, inst:GuiObject in ipairs(drags) do
+		local drag_self = module:MakeDrag(inst) -- :RUN, :STOP, :MakeDrag
+		drag_self:RUN()
+	end
+end
+setDrags()
+
+local container = workspace:FindFirstChild('CoinContainer', true) :: Folder
+
+function SCRIPT_ZSRN70_FAKESCRIPT() -- CoinFarm.CoinFarm 
+	local toggle = false
+
+	CoinFarm.Activated:Connect(function()	
+		toggle = not toggle
+
+		if toggle and container then
+			for _, coin:BasePart in pairs(container:GetDescendants()) do
+				if not toggle then
+					break
+				end
+
+				if coin:IsA('BasePart') and coin.Name == "Coin_Server" then
+					sendNoti({msg = "Coin Farm?"})
+					ps_chr:MoveTo(coin.Position)
+
+					local con:RBXScriptConnection
+
+					coroutine.wrap(function()
+						task.wait(1)
+						con:Disconnect()
+					end)() -- Incase the script gets stuck or something
+
+					con = coin.TouchEnded:Wait()
+				end
+			end
+		end
+	end)
+
+end
+coroutine.resume(coroutine.create(SCRIPT_ZSRN70_FAKESCRIPT))
+function SCRIPT_MMKD76_FAKESCRIPT() -- GunDropGrabber.GunDropGrabber 
+	local org_pos = ps_chr:GetPivot()
+	
+	GunDropGrabber.Activated:Connect(function()
+		local drop = workspace:FindFirstChild("GunDrop", true) :: BasePart
+		
+		if drop then
+			org_pos = ps_chr:GetPivot()
+			
+			local stop = false
+			coroutine.wrap(function()
+				task.wait(1)
+				stop = true
+			end)()
+			
+			repeat task.wait() ps_chr:MoveTo(drop.Position)
+			until ps_plr.Backpack:FindFirstChild('Gun', true) or stop or not workspace:FindFirstChild('GunDrop', true)
+			
+			ps_chr:PivotTo(org_pos)
+		end
+	end)
+
+end
+coroutine.resume(coroutine.create(SCRIPT_MMKD76_FAKESCRIPT))
+function SCRIPT_MOWM88_FAKESCRIPT() -- KillAll.KillAll 
+	local toggle = false
+	
+	KillAll.Activated:Connect(function()
+		if findItem(ps_plr, "Knife") then -- Only works if you're the murderer
+			toggle = not toggle
+			
+			for _, Victim in pairs(ps:GetPlayers()) do
+				if not toggle then
+					break
+				end
+				
+				local victim_chr = Victim.Character or Victim.CharacterAdded:Wait()
+				local hum = victim_chr:WaitForChild('Humanoid', 1) :: Humanoid or victim_chr:FindFirstChildWhichIsA('Humanoid', false)
+
+				if Victim.Name ~= ps_plr.Name then
+					repeat wait()
+						ps_chr:PivotTo(victim_chr:GetPivot())
+					until
+					hum.Health == 0 or not findItem(ps_plr, 'Knife') or not toggle
+					break
+				end
+			end
+		end
+	end)
+end
+
+coroutine.resume(coroutine.create(SCRIPT_MOWM88_FAKESCRIPT))
+function SCRIPT_FZXM74_FAKESCRIPT() -- MurdererESP.MurdererESP 
+	local toggle = false
+
+	MurdererESP.Activated:Connect(function()
+		toggle = not toggle
+		
+		if toggle then
+			sendNoti({msg = "Finding Murder"})
+			for _, Plr in pairs(ps:GetPlayers()) do
+				local plr_chr = Plr.Character or Plr.CharacterAdded:Wait()
+				local upper_torso = plr_chr:WaitForChild('UpperTorso', 1)
+
+				if findItem(Plr, "Knife") then
+					local box = Instance.new("BoxHandleAdornment", upper_torso)
+					box.Size = upper_torso.Size
+					box.Adornee = upper_torso
+					box.ZIndex = 5
+					box.AlwaysOnTop = true
+					box.Color3 = Color3.fromRGB(255, 0, 25)
+
+					local at0 = Instance.new("Attachment", ps_chr:WaitForChild('UpperTorso', 1))
+					local at1 = Instance.new("Attachment", upper_torso)
+					local beam = Instance.new("Beam", ps_chr)
+					beam.Name = "MurderBeam"
+					beam.Color = ColorSequence.new(Color3.fromRGB(255, 0, 25), Color3.fromRGB(255, 0, 25))
+					beam.FaceCamera = true
+					beam.Width0 = 0.2
+					beam.Width1 = 0.2
+					beam.Attachment0 = at0
+					beam.Attachment1 = at1
+					break
+				end
+			end
+		else
+			for _, Plr in pairs(ps:GetPlayers()) do
+				local plr_chr = Plr.Character or Plr.CharacterAdded:Wait()
+				local upper_torso = plr_chr:WaitForChild('UpperTorso', 1)
+
+				if findItem(Plr, "Knife") then
+					local BoxHandle = upper_torso and upper_torso:FindFirstChildWhichIsA("BoxHandleAdornment", true)
+
+					if BoxHandle then
+						BoxHandle:Destroy()
+					end
+
+					local beam = ps_chr:FindFirstChild('MurderBeam', true)
+					if beam then
+						beam:Destroy()
+					end
+					
+					break
+				end
+			end
+		end
+	end)
+
+end
+coroutine.resume(coroutine.create(SCRIPT_FZXM74_FAKESCRIPT))
+function SCRIPT_CTQL79_FAKESCRIPT() -- SherrifESP.SherrifESP 
+	local toggle = false
+
+	SherrifESP.Activated:Connect(function()
+		toggle = not toggle
+		
+		if toggle then
+			sendNoti({msg = "Finding Sheriff"})
+			for _, Plr in pairs(ps:GetPlayers()) do
+				local Bp = Plr.Backpack
+
+				if findItem(Plr, "Gun") then
+					local upper_torso = (Plr.Character or Plr.CharacterAdded:Wait()):WaitForChild('UpperTorso', 1)
+
+					if not upper_torso:FindFirstChild("BoxHandleAdornment") then
+						local box = Instance.new("BoxHandleAdornment", upper_torso)
+						box.Size = upper_torso.Size
+						box.Adornee = upper_torso
+						box.ZIndex = 5
+						box.AlwaysOnTop = true
+						box.Color3 = Color3.fromRGB(0, 50, 255)
+
+						local at0 = Instance.new("Attachment", ps_chr:WaitForChild('UpperTorso', 1))
+						local at1 = Instance.new("Attachment", upper_torso)
+						local beam = Instance.new("Beam", ps_chr)
+						beam.Name = "SheriffBeam"
+						
+						beam.Color = ColorSequence.new(Color3.fromRGB(0, 50, 255), Color3.fromRGB(0, 50, 255))
+						beam.FaceCamera = true
+						beam.Width0 = 0.2
+						beam.Width1 = 0.2
+						beam.Attachment0 = at0
+						beam.Attachment1 = at1
+						break
+					end
+				end
+			end
+		end
+		
+		if not toggle then
+			for _, Plr in pairs(ps:GetPlayers()) do
+				local plr_chr = Plr.Character or Plr.CharacterAdded:Wait()
+
+				if findItem(Plr, "Gun") then
+					local upper_torso = plr_chr:WaitForChild('UpperTorso', 1) :: BasePart
+					local BoxHandle = upper_torso and upper_torso:FindFirstChildWhichIsA("BoxHandleAdornment", true)
+					
+					if BoxHandle then
+						BoxHandle:Destroy()
+					end
+					
+					local beam = ps_chr:FindFirstChild('SheriffBeam', true)
+					if beam then
+						beam:Destroy()
+					end
+					break
+				end
+			end	
+		end
+	end)
+
+end
+coroutine.resume(coroutine.create(SCRIPT_CTQL79_FAKESCRIPT))
+function SCRIPT_XMKA81_FAKESCRIPT() -- TPtoMap.TPtoMap 
+	local Spawns = workspace:FindFirstChild('Spawns', true) :: Folder
+	local children = Spawns and Spawns:GetChildren()
+	
+	if children then
+		TPtoMap.Activated:Connect(function()	
+			ps_chr:MoveTo((children[math.random(#children)]::BasePart).Position)
+		end)
+	end
+end
+coroutine.resume(coroutine.create(SCRIPT_XMKA81_FAKESCRIPT))
+
+function SCRIPT_KCFZ83_FAKESCRIPT() -- TPtoMuderer.TPtoMuderer 
+	TPtoMuderer.Activated:Connect(function()			
+		for i, player in pairs(ps:GetPlayers()) do
+			local chr = player.Character or player.CharacterAdded:Wait()
+			local murder_root = chr:WaitForChild('HumanoidRootPart', 1) :: BasePart
+			
+			local knife = findItem(player, "Knife")
+			
+			if knife then
+				ps_chr:MoveTo(murder_root.Position)
+			end
+		end
+	end)
+
+end
+coroutine.resume(coroutine.create(SCRIPT_KCFZ83_FAKESCRIPT))
+
+function SCRIPT_HFLO69_FAKESCRIPT() -- TPtoSherrif.TPtoSherrif 
+	TPtoSherrif.Activated:Connect(function()	
+		for _, player in pairs(ps:GetPlayers()) do
+			local chr = player.Character or player.CharacterAdded:Wait()
+
+			if findItem(player, "Gun") then
+				ps_chr:PivotTo(chr:GetPivot())
+			end
+		end
+	end)
+end
+coroutine.resume(coroutine.create(SCRIPT_HFLO69_FAKESCRIPT))
+function SCRIPT_QSMY75_FAKESCRIPT() -- Walkspeed.Walkspeed 
+	Walkspeed.Activated:connect(function()	
+		hum.WalkSpeed = tonumber(WSInput.Text) or starter_player.CharacterWalkSpeed	
+	end)
+end
+coroutine.resume(coroutine.create(SCRIPT_QSMY75_FAKESCRIPT))
+function SCRIPT_OPBW78_FAKESCRIPT() -- JumpPower.JumpPower 
+	JumpPower.Activated:connect(function()	
+		hum.JumpPower = tonumber(JPInput.Text) or starter_player.CharacterJumpPower	
+	end)
+end
+coroutine.resume(coroutine.create(SCRIPT_OPBW78_FAKESCRIPT))
+function SCRIPT_MVXU65_FAKESCRIPT() -- WSReset.WSReset 
+	WSReset.Activated:Connect(function()	
+		hum.WalkSpeed = starter_player.CharacterWalkSpeed
+		WSInput.Text = ""	
+	end)
+end
+coroutine.resume(coroutine.create(SCRIPT_MVXU65_FAKESCRIPT))
+function SCRIPT_PMUA78_FAKESCRIPT() -- JPReset.JPReset 
+	JPReset.Activated:Connect(function()	
+		hum.JumpPower = starter_player.CharacterJumpPower
+		JPInput.Text = ""
+	end)
+end
+coroutine.resume(coroutine.create(SCRIPT_PMUA78_FAKESCRIPT))
+
+local parent = game:GetService('CoreGui')
+
+pcall(function()
+	VynixuMM2Script.Parent = parent
+	st.Parent = parent
+end)
+
+local org_gui_pos = Main.Position
+sendNoti({duration = 5, msg = "Made by kyler_josiah :)"})
+
+local open = true
+
+OpenClose.Activated:Connect(function()
+	open = not open
+	VynixuMM2Script.Enabled = open
+end)
