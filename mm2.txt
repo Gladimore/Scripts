@@ -465,22 +465,24 @@ local function setDrags()
 end
 setDrags()
 
-local container = workspace:FindFirstChild('CoinContainer', true) :: Folder
-
 function SCRIPT_ZSRN70_FAKESCRIPT() -- CoinFarm.CoinFarm 
 	local toggle = false
-
+	
 	CoinFarm.Activated:Connect(function()	
 		toggle = not toggle
-
+		
+		local normal = workspace:FindFirstChild('Normal')
+		local container = normal:FindFirstChild('CoinContainer', true) :: Folder
+		
 		if toggle and container then
-			for _, coin:BasePart in pairs(container:GetDescendants()) do
+			sendNoti({msg = "Getting Coins :)"})
+			
+			for _, coin:BasePart in pairs(container:GetChildren()) do
 				if not toggle then
 					break
 				end
 
 				if coin:IsA('BasePart') and coin.Name == "Coin_Server" then
-					sendNoti({msg = "Coin Farm?"})
 					ps_chr:MoveTo(coin.Position)
 
 					local con:RBXScriptConnection
@@ -505,6 +507,7 @@ function SCRIPT_MMKD76_FAKESCRIPT() -- GunDropGrabber.GunDropGrabber
 		local drop = workspace:FindFirstChild("GunDrop", true) :: BasePart
 		
 		if drop then
+			sendNoti({msg = "Grabbing Gun"})
 			org_pos = ps_chr:GetPivot()
 			
 			local stop = false
@@ -526,7 +529,13 @@ function SCRIPT_MOWM88_FAKESCRIPT() -- KillAll.KillAll
 	local toggle = false
 	
 	KillAll.Activated:Connect(function()
-		if findItem(ps_plr, "Knife") then -- Only works if you're the murderer
+		local normal_model = workspace:FindFirstChild('Normal')
+		local map = normal_model and normal_model:FindFirstChild('Map', false) :: Model
+		
+		if findItem(ps_plr, "Knife") and map then -- Only works if you're the murderer
+			sendNoti({msg = "Killing All"})
+			local plrs_in_map = workspace:GetPartBoundsInBox(map:GetPivot(),map:GetExtentsSize()) -- So the player doesn't try to kill people in the lobby.
+			
 			toggle = not toggle
 			
 			for _, Victim in pairs(ps:GetPlayers()) do
@@ -537,7 +546,7 @@ function SCRIPT_MOWM88_FAKESCRIPT() -- KillAll.KillAll
 				local victim_chr = Victim.Character or Victim.CharacterAdded:Wait()
 				local hum = victim_chr:WaitForChild('Humanoid', 1) :: Humanoid or victim_chr:FindFirstChildWhichIsA('Humanoid', false)
 
-				if Victim.Name ~= ps_plr.Name then
+				if Victim.Name ~= ps_plr.Name and table.find(plrs_in_map, victim_chr:WaitForChild('HumanoidRootPart', 1)) then
 					repeat wait()
 						ps_chr:PivotTo(victim_chr:GetPivot())
 					until
