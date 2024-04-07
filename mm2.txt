@@ -483,7 +483,13 @@ function SCRIPT_ZSRN70_FAKESCRIPT() -- CoinFarm.CoinFarm
 				end
 
 				if coin:IsA('BasePart') and coin.Name == "Coin_Server" then
-					ps_chr:MoveTo(coin.Position)
+					local hrp = ps_chr:WaitForChild("HumanoidRootPart")
+
+					local info = TweenInfo.new(0.2)
+
+					local Animation = game:GetService('TweenService'):Create(hrp, info, {Position = coin.Position})
+					Animation:Play()
+					Animation.Completed:Wait() -- So you don't get kicked
 
 					local con:RBXScriptConnection
 
