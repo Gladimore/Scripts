@@ -745,17 +745,15 @@ function SCRIPT_HFLO69_FAKESCRIPT() -- TPtoSherrif.TPtoSherrif
 end
 coroutine.resume(coroutine.create(SCRIPT_HFLO69_FAKESCRIPT))
 function SCRIPT_QSMY75_FAKESCRIPT() -- Walkspeed.Walkspeed 
-	sendNoti({msg = "Setting WalkSpeed"})
-	
 	Walkspeed.Activated:connect(function()	
+		sendNoti({msg = "Setting WalkSpeed"})
 		hum.WalkSpeed = tonumber(WSInput.Text) or starter_player.CharacterWalkSpeed	
 	end)
 end
 coroutine.resume(coroutine.create(SCRIPT_QSMY75_FAKESCRIPT))
 function SCRIPT_OPBW78_FAKESCRIPT() -- JumpPower.JumpPower 
-	sendNoti({msg = "Setting JumpPower"})
-	
 	JumpPower.Activated:connect(function()	
+		sendNoti({msg = "Setting JumpPower"})
 		hum.JumpPower = tonumber(JPInput.Text) or starter_player.CharacterJumpPower	
 	end)
 end
