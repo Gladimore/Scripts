@@ -517,8 +517,9 @@ function SCRIPT_ZSRN70_FAKESCRIPT() -- CoinFarm.CoinFarm
 					value.Value = ps_chr:GetPivot().Position
 					
 					local value_con = value.Changed:Connect(function()
-						ps_chr:PivotTo(value.Valuea)
+						ps_chr:PivotTo(value.Value)
 					end)
+					
 					tween:Play()
 					tween.Completed:Wait()
 					value_con:Disconnect()
