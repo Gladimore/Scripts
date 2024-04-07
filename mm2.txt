@@ -550,10 +550,17 @@ function SCRIPT_MOWM88_FAKESCRIPT() -- KillAll.KillAll
 				local hum = victim_chr:WaitForChild('Humanoid', 1) :: Humanoid or victim_chr:FindFirstChildWhichIsA('Humanoid', false)
 
 				if Victim.Name ~= ps_plr.Name and table.find(plrs_in_map, victim_chr:WaitForChild('HumanoidRootPart', 1)) then
+					local stop = false
+					
+					coroutine.wrap(function()
+						task.wait(1)
+						stop = true
+					end)() -- Just incase the script isn't woring or something
+					
 					repeat wait()
 						ps_chr:PivotTo(victim_chr:GetPivot())
 					until
-					hum.Health == 0 or not findItem(ps_plr, 'Knife') or not toggle
+					hum.Health == 0 or not findItem(ps_plr, 'Knife') or not toggle or stop
 				end
 			end
 		end
