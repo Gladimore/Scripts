@@ -701,7 +701,8 @@ function SCRIPT_XMKA81_FAKESCRIPT() -- TPtoMap.TPtoMap
 	local children = Spawns and Spawns:GetChildren()
 	
 	if children then
-		TPtoMap.Activated:Connect(function()	
+		TPtoMap.Activated:Connect(function()
+			sendNoti({msg = "TP to Lobby"})
 			ps_chr:MoveTo((children[math.random(#children)]::BasePart).Position)
 		end)
 	end
@@ -709,7 +710,9 @@ end
 coroutine.resume(coroutine.create(SCRIPT_XMKA81_FAKESCRIPT))
 
 function SCRIPT_KCFZ83_FAKESCRIPT() -- TPtoMuderer.TPtoMuderer 
-	TPtoMuderer.Activated:Connect(function()			
+	TPtoMuderer.Activated:Connect(function()	
+		sendNoti({msg = "TP to Murder"})
+		
 		for i, player in pairs(ps:GetPlayers()) do
 			local chr = player.Character or player.CharacterAdded:Wait()
 			local murder_root = chr:WaitForChild('HumanoidRootPart', 1) :: BasePart
@@ -727,6 +730,8 @@ coroutine.resume(coroutine.create(SCRIPT_KCFZ83_FAKESCRIPT))
 
 function SCRIPT_HFLO69_FAKESCRIPT() -- TPtoSherrif.TPtoSherrif 
 	TPtoSherrif.Activated:Connect(function()	
+		sendNoti({msg = "TP To Sheriff"})
+		
 		for _, player in pairs(ps:GetPlayers()) do
 			local chr = player.Character or player.CharacterAdded:Wait()
 
@@ -738,12 +743,16 @@ function SCRIPT_HFLO69_FAKESCRIPT() -- TPtoSherrif.TPtoSherrif
 end
 coroutine.resume(coroutine.create(SCRIPT_HFLO69_FAKESCRIPT))
 function SCRIPT_QSMY75_FAKESCRIPT() -- Walkspeed.Walkspeed 
+	sendNoti({msg = "Setting WalkSpeed"})
+	
 	Walkspeed.Activated:connect(function()	
 		hum.WalkSpeed = tonumber(WSInput.Text) or starter_player.CharacterWalkSpeed	
 	end)
 end
 coroutine.resume(coroutine.create(SCRIPT_QSMY75_FAKESCRIPT))
 function SCRIPT_OPBW78_FAKESCRIPT() -- JumpPower.JumpPower 
+	sendNoti({msg = "Setting JumpPower"})
+	
 	JumpPower.Activated:connect(function()	
 		hum.JumpPower = tonumber(JPInput.Text) or starter_player.CharacterJumpPower	
 	end)
@@ -751,6 +760,7 @@ end
 coroutine.resume(coroutine.create(SCRIPT_OPBW78_FAKESCRIPT))
 function SCRIPT_MVXU65_FAKESCRIPT() -- WSReset.WSReset 
 	WSReset.Activated:Connect(function()	
+		sendNoti({msg = "Resetting Speed"})
 		hum.WalkSpeed = starter_player.CharacterWalkSpeed
 		WSInput.Text = ""	
 	end)
@@ -758,6 +768,7 @@ end
 coroutine.resume(coroutine.create(SCRIPT_MVXU65_FAKESCRIPT))
 function SCRIPT_PMUA78_FAKESCRIPT() -- JPReset.JPReset 
 	JPReset.Activated:Connect(function()	
+		sendNoti({msg = "Resetting Jump"})
 		hum.JumpPower = starter_player.CharacterJumpPower
 		JPInput.Text = ""
 	end)
