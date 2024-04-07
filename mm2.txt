@@ -334,39 +334,9 @@ local ps_plr = ps.LocalPlayer or ps.PlayerAdded:Wait()
 local ps_chr = ps_plr.Character or ps_plr.CharacterAdded:Wait()
 local hum = ps_chr:WaitForChild('Humanoid', 1) :: Humanoid or ps_chr:FindFirstChildWhichIsA('Humanoid')
 
-local btns = {
-	CoinFarm, KillAll, SherrifESP, MurdererESP
-}
-
-local colors = {
-	[false] = Color3.fromRGB(255, 14, 14),
-	[true] = Color3.fromRGB(65, 255, 71)
-}
-
-local toggles = {}
-
-for _, btn:TextButton in pairs(btns) do
-	local underline = Underline:Clone()
-	underline.Parent = btn
-	
-	local toggle = false
-	underline.BackgroundColor3 = colors[toggle]
-	
-	btn.Activated:Connect(function()
-		toggle = not toggle
-		underline.BackgroundColor3 = colors[toggle]
-	end)
-end -- I know this is inefficent
-
 ps_plr.CharacterAdded:Connect(function(chr)
 	ps_chr = chr
 	hum = chr:WaitForChild('Humanoid', 1) :: Humanoid or chr:FindFirstChildWhichIsA('Humanoid')
-	
-	for _, btn:TextButton in pairs(btns) do
-		local underline = btn:WaitForChild(Underline.Name)
-		toggles[btn] = false
-		underline.BackgroundColor3 = colors[false]
-	end
 end)
 
 local root = ps_chr:WaitForChild('HumanoidRootPart', 1) :: BasePart
@@ -518,18 +488,22 @@ function SCRIPT_ZSRN70_FAKESCRIPT() -- CoinFarm.CoinFarm
 				end
 
 				if coin:IsA('BasePart') and coin.Name == "Coin_Server" then
-					local value = Instance.new('Vector3Value')
+					local value = Instance.new('CFrameValue')
 					local dis = (coin.Position - ps_chr:GetPivot().Position).Magnitude/20
-					local tween = game:GetService('TweenService'):Create(value, TweenInfo.new(dis+0.5), {['Value'] = coin.Position})
-					value.Value = ps_chr:GetPivot().Position
-					
-					local value_con = value.Changed:Connect(function()
+				
+					local Info = TweenInfo.new(dis) -- all defaults
+
+					local Tween = game:GetService('TweenService'):Create(value, Info, {Value = coin.Position})
+
+					value.Value = ps_chr:GetPivot() -- assign initial position
+
+					local con = value.Changed:Connect(function()
 						ps_chr:PivotTo(value.Value)
 					end)
-					
-					tween:Play()
-					tween.Completed:Wait()
-					value_con:Disconnect()
+
+					Tween:Play()
+					Tween.Completed:Wait()
+					con:Disconnect()
 					
 					task.wait(math.random(50,75)/10)
 				end
@@ -566,16 +540,19 @@ function SCRIPT_MMKD76_FAKESCRIPT() -- GunDropGrabber.GunDropGrabber
 end
 coroutine.resume(coroutine.create(SCRIPT_MMKD76_FAKESCRIPT))
 function SCRIPT_MOWM88_FAKESCRIPT() -- KillAll.KillAll 
+	local toggle = false
+	
 	KillAll.Activated:Connect(function()
-		toggles[KillAll] = not toggles[KillAll]
 		local map = getMap()
 		
-		if findItem(ps_plr, "Knife") and map and toggles[KillAll] then -- Only works if you're the murderer
+		if findItem(ps_plr, "Knife") and map then -- Only works if you're the murderer
 			sendNoti({msg = "Killing All"})
 			local plrs_in_map = workspace:GetPartBoundsInBox(map:GetPivot(),map:GetExtentsSize()) -- So the player doesn't try to kill people in the lobby.
 			
+			toggle = not toggle
+			
 			for _, Victim in pairs(ps:GetPlayers()) do
-				if not toggles[KillAll] then
+				if not toggle then
 					break
 				end
 				
@@ -592,7 +569,7 @@ function SCRIPT_MOWM88_FAKESCRIPT() -- KillAll.KillAll
 					repeat wait()
 						ps_chr:PivotTo(victim_chr:GetPivot())
 					until
-					hum.Health == 0 or not findItem(ps_plr, 'Knife') or not toggles[KillAll] or stop
+					hum.Health == 0 or not findItem(ps_plr, 'Knife') or not toggle or stop
 				end
 			end
 		end
@@ -601,8 +578,12 @@ end
 
 coroutine.resume(coroutine.create(SCRIPT_MOWM88_FAKESCRIPT))
 function SCRIPT_FZXM74_FAKESCRIPT() -- MurdererESP.MurdererESP 
+	local toggle = false
+
 	MurdererESP.Activated:Connect(function()
-		if toggles[MurdererESP] then
+		toggle = not toggle
+		
+		if toggle then
 			sendNoti({msg = "Finding Murder"})
 			for _, Plr in pairs(ps:GetPlayers()) do
 				local plr_chr = Plr.Character or Plr.CharacterAdded:Wait()
@@ -655,8 +636,11 @@ function SCRIPT_FZXM74_FAKESCRIPT() -- MurdererESP.MurdererESP
 end
 coroutine.resume(coroutine.create(SCRIPT_FZXM74_FAKESCRIPT))
 function SCRIPT_CTQL79_FAKESCRIPT() -- SherrifESP.SherrifESP 
+	local toggle = false
 	SherrifESP.Activated:Connect(function()
-		if toggles[SherrifESP] then
+		toggle = not toggle
+
+		if toggle then
 			sendNoti({msg = "Finding Sheriff"})
 			for _, Plr in pairs(ps:GetPlayers()) do
 				if findItem(Plr, "Gun") then
@@ -683,7 +667,9 @@ function SCRIPT_CTQL79_FAKESCRIPT() -- SherrifESP.SherrifESP
 					end
 				end
 			end
-		else
+		end
+
+		if not toggle then
 			for _, Plr in pairs(ps:GetPlayers()) do
 				local plr_chr = Plr.Character or Plr.CharacterAdded:Wait()
 				if findItem(Plr, "Gun") then
@@ -722,7 +708,7 @@ function SCRIPT_KCFZ83_FAKESCRIPT() -- TPtoMuderer.TPtoMuderer
 	TPtoMuderer.Activated:Connect(function()	
 		sendNoti({msg = "TP to Murder"})
 		
-		for _, player in pairs(ps:GetPlayers()) do
+		for i, player in pairs(ps:GetPlayers()) do
 			local chr = player.Character or player.CharacterAdded:Wait()
 			local murder_root = chr:WaitForChild('HumanoidRootPart', 1) :: BasePart
 			
@@ -810,4 +796,3 @@ end
 VynixuMM2Script.Destroying:Once(function()
 	st:Destroy()
 end)
-Underline:Destroy()
