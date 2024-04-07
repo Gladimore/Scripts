@@ -334,11 +334,6 @@ local ps_plr = ps.LocalPlayer or ps.PlayerAdded:Wait()
 local ps_chr = ps_plr.Character or ps_plr.CharacterAdded:Wait()
 local hum = ps_chr:WaitForChild('Humanoid', 1) :: Humanoid or ps_chr:FindFirstChildWhichIsA('Humanoid')
 
-ps_plr.CharacterAdded:Connect(function(chr)
-	ps_chr = chr
-	hum = chr:WaitForChild('Humanoid', 1) :: Humanoid or chr:FindFirstChildWhichIsA('Humanoid')
-end)
-
 local btns = {
 	CoinFarm, KillAll, SherrifESP, MurdererESP
 }
@@ -347,6 +342,8 @@ local colors = {
 	[false] = Color3.fromRGB(255, 14, 14),
 	[true] = Color3.fromRGB(65, 255, 71)
 }
+
+local toggles = {}
 
 for _, btn:TextButton in pairs(btns) do
 	local underline = Underline:Clone()
@@ -360,7 +357,17 @@ for _, btn:TextButton in pairs(btns) do
 		underline.BackgroundColor3 = colors[toggle]
 	end)
 end -- I know this is inefficent
-Underline:Destroy()
+
+ps_plr.CharacterAdded:Connect(function(chr)
+	ps_chr = chr
+	hum = chr:WaitForChild('Humanoid', 1) :: Humanoid or chr:FindFirstChildWhichIsA('Humanoid')
+	
+	for _, btn:TextButton in pairs(btns) do
+		local underline = btn:WaitForChild(Underline.Name)
+		toggles[btn] = false
+		underline.BackgroundColor3 = colors[false]
+	end
+end)
 
 local root = ps_chr:WaitForChild('HumanoidRootPart', 1) :: BasePart
 
@@ -559,19 +566,16 @@ function SCRIPT_MMKD76_FAKESCRIPT() -- GunDropGrabber.GunDropGrabber
 end
 coroutine.resume(coroutine.create(SCRIPT_MMKD76_FAKESCRIPT))
 function SCRIPT_MOWM88_FAKESCRIPT() -- KillAll.KillAll 
-	local toggle = false
-	
 	KillAll.Activated:Connect(function()
+		toggles[KillAll] = not toggles[KillAll]
 		local map = getMap()
 		
-		if findItem(ps_plr, "Knife") and map then -- Only works if you're the murderer
+		if findItem(ps_plr, "Knife") and map and toggles[KillAll] then -- Only works if you're the murderer
 			sendNoti({msg = "Killing All"})
 			local plrs_in_map = workspace:GetPartBoundsInBox(map:GetPivot(),map:GetExtentsSize()) -- So the player doesn't try to kill people in the lobby.
 			
-			toggle = not toggle
-			
 			for _, Victim in pairs(ps:GetPlayers()) do
-				if not toggle then
+				if not toggles[KillAll] then
 					break
 				end
 				
@@ -588,7 +592,7 @@ function SCRIPT_MOWM88_FAKESCRIPT() -- KillAll.KillAll
 					repeat wait()
 						ps_chr:PivotTo(victim_chr:GetPivot())
 					until
-					hum.Health == 0 or not findItem(ps_plr, 'Knife') or not toggle or stop
+					hum.Health == 0 or not findItem(ps_plr, 'Knife') or not toggles[KillAll] or stop
 				end
 			end
 		end
@@ -597,12 +601,8 @@ end
 
 coroutine.resume(coroutine.create(SCRIPT_MOWM88_FAKESCRIPT))
 function SCRIPT_FZXM74_FAKESCRIPT() -- MurdererESP.MurdererESP 
-	local toggle = false
-
 	MurdererESP.Activated:Connect(function()
-		toggle = not toggle
-		
-		if toggle then
+		if toggles[MurdererESP] then
 			sendNoti({msg = "Finding Murder"})
 			for _, Plr in pairs(ps:GetPlayers()) do
 				local plr_chr = Plr.Character or Plr.CharacterAdded:Wait()
@@ -655,11 +655,8 @@ function SCRIPT_FZXM74_FAKESCRIPT() -- MurdererESP.MurdererESP
 end
 coroutine.resume(coroutine.create(SCRIPT_FZXM74_FAKESCRIPT))
 function SCRIPT_CTQL79_FAKESCRIPT() -- SherrifESP.SherrifESP 
-	local toggle = false
 	SherrifESP.Activated:Connect(function()
-		toggle = not toggle
-
-		if toggle then
+		if toggles[SherrifESP] then
 			sendNoti({msg = "Finding Sheriff"})
 			for _, Plr in pairs(ps:GetPlayers()) do
 				if findItem(Plr, "Gun") then
@@ -686,9 +683,7 @@ function SCRIPT_CTQL79_FAKESCRIPT() -- SherrifESP.SherrifESP
 					end
 				end
 			end
-		end
-
-		if not toggle then
+		else
 			for _, Plr in pairs(ps:GetPlayers()) do
 				local plr_chr = Plr.Character or Plr.CharacterAdded:Wait()
 				if findItem(Plr, "Gun") then
@@ -727,7 +722,7 @@ function SCRIPT_KCFZ83_FAKESCRIPT() -- TPtoMuderer.TPtoMuderer
 	TPtoMuderer.Activated:Connect(function()	
 		sendNoti({msg = "TP to Murder"})
 		
-		for i, player in pairs(ps:GetPlayers()) do
+		for _, player in pairs(ps:GetPlayers()) do
 			local chr = player.Character or player.CharacterAdded:Wait()
 			local murder_root = chr:WaitForChild('HumanoidRootPart', 1) :: BasePart
 			
@@ -815,3 +810,4 @@ end
 VynixuMM2Script.Destroying:Once(function()
 	st:Destroy()
 end)
+Underline:Destroy()
