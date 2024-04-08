@@ -470,46 +470,143 @@ local function setDrags()
 end
 setDrags()
 
+local coin_toggle = false
+local org_pos = ps_chr:GetPivot()
+local cons = {}
+local Tween:Tween
+
+local function stopCons()
+	for _, con:RBXScriptConnection in pairs(cons) do
+		pcall(function()
+			con:Disconnect()
+		end)
+	end
+	cons = {}
+end
+
+local function setVelocity()
+	for _, part:BasePart in pairs(ps_chr:GetChildren()) do
+		if part and part:IsA('BasePart') then
+			part.AssemblyLinearVelocity = Vector3.new(0,0,0)
+		end
+	end
+end
+
+local function resetPos()
+	local stop = false
+	coroutine.wrap(function()
+		task.wait(1)
+		stop = true
+	end)()
+
+	ps_chr.PrimaryPart.Anchored = true
+	setVelocity()
+	
+	repeat task.wait() ps_chr:PivotTo(org_pos)
+	until ps_chr:GetPivot() == org_pos or stop
+	ps_chr.PrimaryPart.Anchored = false
+end
+
+local function moveToCoins()
+	stopCons()
+	
+	local container = workspace:FindFirstChild('CoinContainer', true) :: Folder
+	
+	local tbl = container:GetChildren()
+
+	for i, coin:BasePart in pairs(tbl) do
+		if not coin:IsA('BasePart') or coin.Name ~= "Coin_Server" then
+			table.remove(tbl, i)
+		end
+	end
+	
+	local function findDistance(main_pos:Vector3, pos)
+		return (main_pos - pos).Magnitude
+	end
+	
+	local function sort()
+		local as_vec = ps_chr:GetPivot().Position
+		
+		table.sort(tbl, function(a:BasePart,b:BasePart)
+			return findDistance(as_vec, a.Position) < findDistance(as_vec, b.Position)
+		end)
+	end
+	sort()
+	
+	local function moveToCloset()
+		sort()
+		
+		local coin = tbl[1] :: BasePart
+		
+		if not coin_toggle then
+			pcall(function()
+				Tween:Pause()
+				Tween:Destroy()
+				Tween = nil
+			end)
+			
+			ps_chr:PivotTo(org_pos)
+			resetPos()
+		end
+
+		if coin and coin:IsA('BasePart') and coin.Name == "Coin_Server" and coin_toggle then
+			local value = Instance.new('CFrameValue')
+			local dis = (coin.Position - ps_chr:GetPivot().Position).Magnitude/22 -- studs per second
+
+			local Info = TweenInfo.new(dis, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0) -- all defaults
+
+			Tween = game:GetService('TweenService'):Create(value, Info, {Value = coin.CFrame})
+
+			value.Value = ps_chr:GetPivot() -- assign initial position
+
+			local con = value.Changed:Connect(function()
+				ps_chr:PivotTo(value.Value)
+				setVelocity()
+			end)
+			
+			print(cons)
+			table.insert(cons, con)
+
+			Tween:Play()
+			Tween.Completed:Wait()
+			con:Disconnect()
+			table.remove(tbl, table.find(tbl,coin))
+			
+			if #tbl == 0 then
+				resetPos()
+			else
+				moveToCloset()
+			end
+		end
+	end
+	moveToCloset()
+end
+
 function SCRIPT_ZSRN70_FAKESCRIPT() -- CoinFarm.CoinFarm 
-	local toggle = false
+	local org_pos = ps_chr:GetPivot()
+	
+	CoinFarm.Activated:Once(moveToCoins)
 	
 	CoinFarm.Activated:Connect(function()	
-		toggle = not toggle
+		coin_toggle = not coin_toggle
 		
-		local normal = workspace:FindFirstChild('Normal')
-		local container = normal:FindFirstChild('CoinContainer', true) :: Folder
-		local org_pos = ps_chr:GetPivot()
+		local container = workspace:FindFirstChild('CoinContainer', true) :: Folder
 		
-		if toggle and container then
-			sendNoti({msg = "Getting Coins :)"})
+		if coin_toggle and container then
 			org_pos = ps_chr:GetPivot()
 			
-			for _, coin:BasePart in pairs(container:GetChildren()) do
-				if not toggle then
-					break
+			sendNoti({msg = "Getting Coins :)"})
+			
+			table.insert(cons, container.ChildAdded:Connect(function(child)
+				if child.Name == "Coin_Server" then
+					coroutine.wrap(function()
+						moveToCoins()
+					end)()
 				end
-
-				if coin:IsA('BasePart') and coin.Name == "Coin_Server" then
-					local value = Instance.new('CFrameValue')
-					local dis = (coin.Position - ps_chr:GetPivot().Position).Magnitude/20
-				
-					local Info = TweenInfo.new(dis) -- all defaults
-
-					local Tween = game:GetService('TweenService'):Create(value, Info, {Value = coin.CFrame})
-
-					value.Value = ps_chr:GetPivot() -- assign initial position
-
-					local con = value.Changed:Connect(function()
-						ps_chr:PivotTo(value.Value)
-					end)
-
-					Tween:Play()
-					Tween.Completed:Wait()
-					con:Disconnect()
-					ps_chr:PivotTo(org_pos)
-				end
-				ps_chr:PivotTo(org_pos)
-			end
+			end))
+		elseif not coin_toggle then
+			stopCons()
+			resetPos()
 		end
 	end)
 
@@ -532,7 +629,7 @@ function SCRIPT_MMKD76_FAKESCRIPT() -- GunDropGrabber.GunDropGrabber
 				stop = true
 			end)()
 			
-			repeat task.wait() ps_chr:MoveTo(drop.Position)
+			repeat task.wait() ps_chr:PivotTo(drop.Position)
 			until ps_plr.Backpack:FindFirstChild('Gun', true) or stop or not workspace:FindFirstChild('GunDrop', true)
 			
 			ps_chr:PivotTo(org_pos)
