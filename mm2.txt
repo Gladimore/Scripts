@@ -900,7 +900,7 @@ if success then
 	local data = game.HttpService:JSONDecode(response)
 	
 	local committer_date = data[1].commit.committer.date
-	sendNoti({msg = credit.."\n Last Updated:"..tostring(committer_date), duration = 6})
+	sendNoti({msg = credit.."\nUpdated:"..tostring(committer_date), duration = 6})
 else
 	print("Error: HTTP request failed.")
 	sendNoti({msg = credit})
