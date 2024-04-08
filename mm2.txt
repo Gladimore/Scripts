@@ -822,7 +822,6 @@ function SCRIPT_KCFZ83_FAKESCRIPT() -- TPtoMuderer.TPtoMuderer
 			end
 		end
 	end)
-
 end
 coroutine.resume(coroutine.create(SCRIPT_KCFZ83_FAKESCRIPT))
 
