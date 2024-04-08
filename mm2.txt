@@ -7,7 +7,7 @@
 -- Instances:
 
 local VynixuMM2Script = Instance.new("ScreenGui")
-VynixuMM2Script.Name = "VynixuMM2Script"
+VynixuMM2Script.Name = "MM2"
 VynixuMM2Script.ResetOnSpawn = false
 VynixuMM2Script.IgnoreGuiInset = true
 
