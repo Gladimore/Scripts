@@ -895,15 +895,16 @@ local url = string.format("https://api.github.com/repos/%s/%s/commits?path=%s&pa
 local success, response = pcall(game.HttpGet, game, url)
 
 local credit = "Made by kyler_josiah :)"
+local credit_duration = 6
 
 if success then
 	local data = game.HttpService:JSONDecode(response)
 	
 	local committer_date = data[1].commit.committer.date
-	sendNoti({msg = credit.."\nUpdated:"..tostring(committer_date), duration = 6})
+	sendNoti({msg = credit.."\n Last Updated:"..tostring(committer_date), duration = credit_duration})
 else
 	print("Error: HTTP request failed.")
-	sendNoti({msg = credit})
+	sendNoti({msg = credit, duration = credit_duration})
 end
 
 
