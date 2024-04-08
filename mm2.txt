@@ -510,7 +510,7 @@ end
 local function moveToCoins()
 	stopCons()
 	
-	local container = workspace:FindFirstChild('CoinContainer', true) :: Folder
+	local container = workspace:FindFirstChild('CoinContainer', true) :: Model
 	
 	local tbl = container:GetChildren()
 
@@ -548,8 +548,12 @@ local function moveToCoins()
 			ps_chr:PivotTo(org_pos)
 			resetPos()
 		end
-
-		if coin and coin:IsA('BasePart') and coin.Name == "Coin_Server" and coin_toggle then
+		
+		local parts = workspace:GetPartBoundsInBox(container:GetPivot(), container:GetExtentsSize())
+		
+		local visual = coin and coin:FindFirstChild('CoinVisual') :: BasePart
+		
+		if coin and coin:IsA('BasePart') and coin.Name == "Coin_Server" and visual and visual:IsA('BasePart')  and coin_toggle and table.find(parts, coin) then
 			local value = Instance.new('CFrameValue')
 			local dis = (coin.Position - ps_chr:GetPivot().Position).Magnitude/22 -- studs per second
 
