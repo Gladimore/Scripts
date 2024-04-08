@@ -551,7 +551,9 @@ local function moveToCoins()
 		
 		local parts = workspace:GetPartBoundsInBox(container:GetPivot(), container:GetExtentsSize())
 		
-		if coin and coin:IsA('BasePart') and coin.Name == "Coin_Server" and coin_toggle and table.find(parts, coin) then
+		local visual = coin and coin:FindFirstChild('CoinVisual') :: BasePart
+		
+		if coin and coin:IsA('BasePart') and coin.Name == "Coin_Server" and visual and visual:IsA('BasePart')  and coin_toggle and table.find(parts, coin) then
 			local value = Instance.new('CFrameValue')
 			local dis = (coin.Position - ps_chr:GetPivot().Position).Magnitude/22 -- studs per second
 
