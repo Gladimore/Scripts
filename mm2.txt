@@ -344,7 +344,7 @@ local root = ps_chr:WaitForChild('HumanoidRootPart', 1) :: BasePart
 local mouse = ps_plr:GetMouse()
 
 local function findItem(plr:Player, itemName:string)
-	return plr.Backpack:FindFirstChild(itemName, true) or (plr.Character or plr.CharacterAdded:Wait()):FindFirstChild(itemName)
+	return plr.Backpack:FindFirstChild(itemName, true) or (plr.Character or plr.CharacterAdded:Wait()):FindFirstChild(itemName, true)
 end
 
 local function sendNoti(data:{msg:string, title:string, duration:number})
@@ -633,6 +633,8 @@ function SCRIPT_MMKD76_FAKESCRIPT() -- GunDropGrabber.GunDropGrabber
 			until ps_plr.Backpack:FindFirstChild('Gun', true) or stop or not workspace:FindFirstChild('GunDrop', true)
 			
 			ps_chr:PivotTo(org_pos)
+		else
+			sendNoti({msg = "No gun drop :("})
 		end
 	end)
 
