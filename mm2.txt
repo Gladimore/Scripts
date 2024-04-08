@@ -6,10 +6,10 @@
 
 -- Instances:
 
-local VynixuMM2Script = Instance.new("ScreenGui")
-VynixuMM2Script.Name = "MM2"
-VynixuMM2Script.ResetOnSpawn = false
-VynixuMM2Script.IgnoreGuiInset = true
+local MM2Gui = Instance.new("ScreenGui")
+MM2Gui.Name = "MM2Gui"
+MM2Gui.ResetOnSpawn = false
+MM2Gui.IgnoreGuiInset = true
 
 local st = Instance.new('ScreenGui')
 st.IgnoreGuiInset = true
@@ -67,7 +67,7 @@ UICorner2.CornerRadius = UDim.new(0.100000001, 0)
 UICorner2.Parent = OpenClose
 
 Main.Name = "Main"
-Main.Parent = VynixuMM2Script
+Main.Parent = MM2Gui
 Main.AnchorPoint = Vector2.new(0.5, 0.5)
 Main.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
 Main.BorderSizePixel = 0
@@ -877,7 +877,7 @@ coroutine.resume(coroutine.create(SCRIPT_PMUA78_FAKESCRIPT))
 local parent = game:GetService('CoreGui')
 
 pcall(function()
-	VynixuMM2Script.Parent = parent
+	MM2Gui.Parent = parent
 	st.Parent = parent
 end)
 
@@ -912,15 +912,15 @@ local open = true
 
 OpenClose.Activated:Connect(function()
 	open = not open
-	VynixuMM2Script.Enabled = open
+	MM2Gui.Enabled = open
 end)
 
 for _, gui:ScreenGui in pairs(parent:GetChildren()) do
-	if gui ~= VynixuMM2Script and gui.Name == VynixuMM2Script.Name then
+	if gui ~= MM2Gui and gui.Name == MM2Gui.Name then
 		gui:Destroy()
 	end
 end
 
-VynixuMM2Script.Destroying:Once(function()
+MM2Gui.Destroying:Once(function()
 	st:Destroy()
 end)
