@@ -551,8 +551,7 @@ local function moveToCoins()
 		resetPos()
 	end
 	
-	local chosen = map or coin_container
-	local parts = workspace:GetPartBoundsInBox(chosen:GetPivot(), chosen:GetExtentsSize()) -- Incase the coins are clipping through
+	local parts = workspace:GetPartBoundsInBox(map:GetPivot(), map:GetExtentsSize()) -- Incase the coins are clipping through
 
 	local main = coin and coin:FindFirstChild('MainCoin', true) :: BasePart
 
