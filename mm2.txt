@@ -549,7 +549,7 @@ local function moveToCoins()
 			resetPos()
 		end
 		
-		local parts = workspace:GetPartBoundsInBox(container:GetPivot(), container:GetExtentsSize())
+		local parts = workspace:GetPartBoundsInBox(container:GetPivot(), container:GetExtentsSize()*1.1) -- Incase the coins are clipping through
 		
 		local visual = coin and coin:FindFirstChild('CoinVisual') :: BasePart
 		
@@ -581,6 +581,9 @@ local function moveToCoins()
 			else
 				moveToCloset()
 			end
+		else
+			table.remove(tbl, table.find(tbl,coin))
+			moveToCloset()
 		end
 	end
 	moveToCloset()
