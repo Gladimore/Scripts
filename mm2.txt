@@ -459,7 +459,7 @@ local drags = {OpenClose, Main}
 
 local function getMap()
 	local normal_model = workspace:FindFirstChild('Normal')
-	local map = normal_model and normal_model:FindFirstChild('Map', false) :: Model
+	local map = normal_model and normal_model:WaitForChild('Map', 1) :: Model
 	return map
 end
 
@@ -512,10 +512,8 @@ local function moveToCoins()
 	task.wait()
 	stopCons()
 	
-	print('test')
-	
 	local normal = workspace:FindFirstChild('Normal') :: Model
-	local map = normal:FindFirstChild('Map') :: Model
+	local map = normal:WaitForChild('Map', 1) :: Model
 	local coin_container = normal:FindFirstChild('CoinContainer', true) :: Model
 
 	local coins = {}
@@ -554,11 +552,11 @@ local function moveToCoins()
 	end
 	
 	local chosen = map or coin_container
-	local parts = workspace:GetPartBoundsInBox(chosen:GetPivot(), chosen:GetExtentsSize()*1.1) -- Incase the coins are clipping through
+	local parts = workspace:GetPartBoundsInBox(chosen:GetPivot(), chosen:GetExtentsSize()) -- Incase the coins are clipping through
 
-	local visual = coin and coin:FindFirstChild('CoinVisual') :: BasePart
+	local main = coin and coin:FindFirstChild('MainCoin', true) :: BasePart
 
-	if coin and visual and coin_toggle and table.find(parts, coin) then
+	if coin and main and coin_toggle and table.find(parts, coin) then
 		local value = Instance.new('CFrameValue')
 		local dis = (coin.Position - ps_chr:GetPivot().Position).Magnitude/22 -- studs per second
 
@@ -568,6 +566,8 @@ local function moveToCoins()
 
 		value.Value = ps_chr:GetPivot()
 
+		ps_chr.PrimaryPart.Anchored = true
+		
 		local con = value.Changed:Connect(function()
 			ps_chr:PivotTo(value.Value)
 			setVelocity()
@@ -622,9 +622,9 @@ function SCRIPT_MMKD76_FAKESCRIPT() -- GunDropGrabber.GunDropGrabber
 	local org_pos = ps_chr:GetPivot()
 	
 	GunDropGrabber.Activated:Connect(function()
-		local drop = workspace:FindFirstChild("GunDrop", true) :: BasePart
+		local drop = workspace:FindFirstChild("GunDrop") :: BasePart
 		
-		if drop and getMap() then
+		if drop then
 			sendNoti({msg = "Grabbing Gun"})
 			org_pos = ps_chr:GetPivot()
 			
