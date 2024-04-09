@@ -329,6 +329,7 @@ local uis = game:GetService('UserInputService')
 local starter_player = game:GetService('StarterPlayer')
 local st_gui = game:GetService('StarterGui')
 local ps = game:GetService('Players')
+local workspce = game:GetService('Workspace')
 
 local ps_plr = ps.LocalPlayer or ps.PlayerAdded:Wait()
 local ps_chr = ps_plr.Character or ps_plr.CharacterAdded:Wait()
@@ -508,85 +509,91 @@ local function resetPos()
 end
 
 local function moveToCoins()
+	task.wait()
 	stopCons()
 	
-	local container = workspace:FindFirstChild('CoinContainer', true) :: Model
+	print('test')
 	
-	local tbl = container:GetChildren()
+	local normal = workspace:FindFirstChild('Normal') :: Model
+	local map = normal:FindFirstChild('Map') :: Model
+	local coin_container = normal:FindFirstChild('CoinContainer', true) :: Model
 
-	for i, coin:BasePart in pairs(tbl) do
-		if not coin:IsA('BasePart') or coin.Name ~= "Coin_Server" then
-			table.remove(tbl, i)
+	local coins = {}
+	for _, child in pairs(coin_container:GetChildren()) do
+		if child:IsA('BasePart') and child.Name == "Coin_Server" then
+			table.insert(coins, child)
 		end
 	end
-	
+
 	local function findDistance(main_pos:Vector3, pos)
 		return (main_pos - pos).Magnitude
 	end
-	
-	local function sort()
+
+	local function sortCoins()
 		local as_vec = ps_chr:GetPivot().Position
-		
-		table.sort(tbl, function(a:BasePart,b:BasePart)
+
+		table.sort(coins, function(a:BasePart, b:BasePart)
 			return findDistance(as_vec, a.Position) < findDistance(as_vec, b.Position)
 		end)
 	end
-	sort()
-	
-	local function moveToCloset()
-		sort()
-		
-		local coin = tbl[1] :: BasePart
-		
-		if not coin_toggle then
-			pcall(function()
+	sortCoins()
+
+	local coin = coins[1] :: BasePart
+
+	if not coin_toggle then
+		pcall(function()
+			if Tween then
 				Tween:Pause()
 				Tween:Destroy()
 				Tween = nil
-			end)
-			
-			ps_chr:PivotTo(org_pos)
-			resetPos()
-		end
-		
-		local parts = workspace:GetPartBoundsInBox(container:GetPivot(), container:GetExtentsSize()*1.1) -- Incase the coins are clipping through
-		
-		local visual = coin and coin:FindFirstChild('CoinVisual') :: BasePart
-		
-		if coin and coin:IsA('BasePart') and coin.Name == "Coin_Server" and visual and visual:IsA('BasePart')  and coin_toggle and table.find(parts, coin) then
-			local value = Instance.new('CFrameValue')
-			local dis = (coin.Position - ps_chr:GetPivot().Position).Magnitude/22 -- studs per second
-
-			local Info = TweenInfo.new(dis, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0) -- all defaults
-
-			Tween = game:GetService('TweenService'):Create(value, Info, {Value = coin.CFrame})
-
-			value.Value = ps_chr:GetPivot() -- assign initial position
-
-			local con = value.Changed:Connect(function()
-				ps_chr:PivotTo(value.Value)
-				setVelocity()
-			end)
-			
-			print(cons)
-			table.insert(cons, con)
-
-			Tween:Play()
-			Tween.Completed:Wait()
-			con:Disconnect()
-			table.remove(tbl, table.find(tbl,coin))
-			
-			if #tbl == 0 then
-				resetPos()
-			else
-				moveToCloset()
 			end
+		end)
+
+		ps_chr:PivotTo(org_pos)
+		resetPos()
+	end
+	
+	local chosen = map or coin_container
+	local parts = workspace:GetPartBoundsInBox(chosen:GetPivot(), chosen:GetExtentsSize()*1.1) -- Incase the coins are clipping through
+
+	local visual = coin and coin:FindFirstChild('CoinVisual') :: BasePart
+
+	if coin and visual and coin_toggle and table.find(parts, coin) then
+		local value = Instance.new('CFrameValue')
+		local dis = (coin.Position - ps_chr:GetPivot().Position).Magnitude/22 -- studs per second
+
+		local Info = TweenInfo.new(dis, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0) -- all defaults
+
+		Tween = game:GetService('TweenService'):Create(value, Info, {Value = coin.CFrame})
+
+		value.Value = ps_chr:GetPivot()
+
+		local con = value.Changed:Connect(function()
+			ps_chr:PivotTo(value.Value)
+			setVelocity()
+		end)
+
+		table.insert(cons, con)
+
+		Tween:Play()
+		Tween.Completed:Wait()
+		con:Disconnect()
+		table.remove(coins, 1)
+
+		if #coins == 0 then
+			resetPos()
+			stopConnection()
 		else
-			table.remove(tbl, table.find(tbl,coin))
-			moveToCloset()
+			moveToCoins()
+		end
+	else
+		table.remove(coins, 1)
+		
+		if #coins > 0 and coin_toggle then
+			moveToCoins()
+			print('yeah |)')
 		end
 	end
-	moveToCloset()
 end
 
 function SCRIPT_ZSRN70_FAKESCRIPT() -- CoinFarm.CoinFarm 
@@ -603,14 +610,6 @@ function SCRIPT_ZSRN70_FAKESCRIPT() -- CoinFarm.CoinFarm
 			org_pos = ps_chr:GetPivot()
 			
 			sendNoti({msg = "Getting Coins :)"})
-			
-			table.insert(cons, container.ChildAdded:Connect(function(child)
-				if child.Name == "Coin_Server" then
-					coroutine.wrap(function()
-						moveToCoins()
-					end)()
-				end
-			end))
 		elseif not coin_toggle then
 			stopCons()
 			resetPos()
