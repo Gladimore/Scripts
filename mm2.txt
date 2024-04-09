@@ -577,7 +577,18 @@ local function moveToCoins()
 		Tween:Play()
 		Tween.Completed:Wait()
 		con:Disconnect()
-		table.remove(coins, 1)
+		table.remove(coins, table.find(coins, coin))
+		ps_chr.PrimaryPart.Anchored = false
+		setVelocity()
+		
+		local con2:RBXScriptConnection
+		
+		coroutine.wrap(function()
+			task.wait(0.5)
+			con:Disconnect()
+		end)()
+		
+		con2 = coin.TouchEnded:Wait()
 
 		if #coins == 0 then
 			resetPos()
