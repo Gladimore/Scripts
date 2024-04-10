@@ -1,3 +1,6 @@
+-- Made by kyler_josiah, btw the dude who orginally made the sucks at scripting, bro used basically no variables, his code is so sloppy. (I would have had fixed it, but I don't feel like fixing it all)
+-- Update I fixed it all :(
+
 -- Gui to Lua
 -- Version: 3.2
 
@@ -554,9 +557,7 @@ local function moveToCoins()
 	local chosen = map or coin_container
 	local parts = workspace:GetPartBoundsInBox(chosen:GetPivot(), chosen:GetExtentsSize()) -- Incase the coins are clipping through
 
-	local main = coin and coin:FindFirstChild('MainCoin', true) :: BasePart
-
-	if coin and main and coin_toggle and table.find(parts, coin) then
+	if coin and coin_toggle and table.find(parts, coin) then
 		local value = Instance.new('CFrameValue')
 		local dis = (coin.Position - ps_chr:GetPivot().Position).Magnitude/22 -- studs per second
 
