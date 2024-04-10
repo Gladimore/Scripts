@@ -511,6 +511,7 @@ end
 local ignore = {}
 
 local function moveToCoins()
+	task.wait()
 	stopCons()
 
 	local normal = workspace:FindFirstChild('Normal') :: Model
@@ -568,8 +569,6 @@ local function moveToCoins()
 
 		value.Value = ps_chr:GetPivot()
 
-		ps_chr.PrimaryPart.Anchored = true
-
 		local con = value.Changed:Connect(function()
 			ps_chr:PivotTo(value.Value)
 			setVelocity()
@@ -584,6 +583,8 @@ local function moveToCoins()
 		setVelocity()
 
 		local function handleNext()
+			print('e')
+			
 			if #coins == 0 then
 				resetPos()
 				stopCons()
@@ -602,23 +603,20 @@ local function moveToCoins()
 				handleNext()
 			end
 		end)
-
-		task.wait(0.5)
-
-		if not ended then
-			con:Disconnect()
-		end
-
-		if not ended and coin:FindFirstChild('MainCoin', true) then
-			table.insert(ignore, coin)
-			handleNext()
-		end
+		
+		coroutine.wrap(function()
+			task.wait(0.5)
+			coin:Destroy()
+			
+			if not ended then
+				handleNext()
+			end
+		end)()
 	else
 		table.remove(coins, 1)
 
 		if #coins > 0 and coin_toggle then
 			moveToCoins()
-			print('yeah |)')
 		end
 	end
 end
