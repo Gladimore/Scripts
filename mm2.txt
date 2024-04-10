@@ -350,10 +350,10 @@ end
 
 local function sendNoti(data:{msg:string, title:string, duration:number})
 	local msg, title, duration = data.msg, data.title, data.duration
-	
+
 	title = title or "MM2 Script"
 	duration = tonumber(duration) or 3
-	
+
 	st_gui:SetCore("SendNotification", {
 		['Title'] = title,
 		['Text'] = msg,
@@ -502,23 +502,25 @@ local function resetPos()
 
 	ps_chr.PrimaryPart.Anchored = true
 	setVelocity()
-	
+
 	repeat task.wait() ps_chr:PivotTo(org_pos)
 	until ps_chr:GetPivot() == org_pos or stop
 	ps_chr.PrimaryPart.Anchored = false
 end
 
+local ignore = {}
+
 local function moveToCoins()
-	task.wait()
 	stopCons()
-	
+
 	local normal = workspace:FindFirstChild('Normal') :: Model
 	local map = normal:WaitForChild('Map', 1) :: Model
 	local coin_container = normal:FindFirstChild('CoinContainer', true) :: Model
 
 	local coins = {}
+
 	for _, child in pairs(coin_container:GetChildren()) do
-		if child:IsA('BasePart') and child.Name == "Coin_Server" then
+		if child:IsA('BasePart') and child.Name == "Coin_Server" and not table.find(ignore, child) then
 			table.insert(coins, child)
 		end
 	end
@@ -550,8 +552,9 @@ local function moveToCoins()
 		ps_chr:PivotTo(org_pos)
 		resetPos()
 	end
-	
-	local parts = workspace:GetPartBoundsInBox(map:GetPivot(), map:GetExtentsSize()) -- Incase the coins are clipping through
+
+	local chosen = map or coin_container
+	local parts = workspace:GetPartBoundsInBox(chosen:GetPivot(), chosen:GetExtentsSize()) -- Incase the coins are clipping through
 
 	local main = coin and coin:FindFirstChild('MainCoin', true) :: BasePart
 
@@ -566,7 +569,7 @@ local function moveToCoins()
 		value.Value = ps_chr:GetPivot()
 
 		ps_chr.PrimaryPart.Anchored = true
-		
+
 		local con = value.Changed:Connect(function()
 			ps_chr:PivotTo(value.Value)
 			setVelocity()
@@ -578,27 +581,41 @@ local function moveToCoins()
 		Tween.Completed:Wait()
 		con:Disconnect()
 		table.remove(coins, table.find(coins, coin))
-		ps_chr.PrimaryPart.Anchored = false
 		setVelocity()
-		
-		local con2:RBXScriptConnection
-		
-		coroutine.wrap(function()
-			task.wait(0.5)
-			con:Disconnect()
-		end)()
-		
-		con2 = coin.TouchEnded:Wait()
 
-		if #coins == 0 then
-			resetPos()
-			stopConnection()
-		else
-			moveToCoins()
+		local function handleNext()
+			if #coins == 0 then
+				resetPos()
+				stopCons()
+			else
+				moveToCoins()
+			end
+		end
+
+		local con:RBXScriptConnection
+
+		local ended = false
+		con = coin.TouchEnded:Connect(function(hit)
+			if hit.Parent == ps_chr then
+				con:Disconnect()
+				ended = true
+				handleNext()
+			end
+		end)
+
+		task.wait(0.5)
+
+		if not ended then
+			con:Disconnect()
+		end
+
+		if not ended and coin:FindFirstChild('MainCoin', true) then
+			table.insert(ignore, coin)
+			handleNext()
 		end
 	else
 		table.remove(coins, 1)
-		
+
 		if #coins > 0 and coin_toggle then
 			moveToCoins()
 			print('yeah |)')
@@ -608,17 +625,17 @@ end
 
 function SCRIPT_ZSRN70_FAKESCRIPT() -- CoinFarm.CoinFarm 
 	local org_pos = ps_chr:GetPivot()
-	
+
 	CoinFarm.Activated:Once(moveToCoins)
-	
+
 	CoinFarm.Activated:Connect(function()	
 		coin_toggle = not coin_toggle
-		
+
 		local container = workspace:FindFirstChild('CoinContainer', true) :: Folder
-		
+
 		if coin_toggle and container then
 			org_pos = ps_chr:GetPivot()
-			
+
 			sendNoti({msg = "Getting Coins :)"})
 		elseif not coin_toggle then
 			stopCons()
@@ -630,24 +647,24 @@ end
 coroutine.resume(coroutine.create(SCRIPT_ZSRN70_FAKESCRIPT))
 function SCRIPT_MMKD76_FAKESCRIPT() -- GunDropGrabber.GunDropGrabber 
 	local org_pos = ps_chr:GetPivot()
-	
+
 	GunDropGrabber.Activated:Connect(function()
 		local drop = workspace:FindFirstChild("GunDrop") :: BasePart
-		
+
 		if drop then
 			sendNoti({msg = "Grabbing Gun"})
 			org_pos = ps_chr:GetPivot()
-			
+
 			local stop = false
-			
+
 			coroutine.wrap(function()
 				task.wait(1)
 				stop = true
 			end)()
-			
+
 			repeat task.wait() ps_chr:PivotTo(drop.Position)
 			until ps_plr.Backpack:FindFirstChild('Gun', true) or stop or not workspace:FindFirstChild('GunDrop', true)
-			
+
 			ps_chr:PivotTo(org_pos)
 		else
 			sendNoti({msg = "No gun drop :("})
@@ -658,21 +675,21 @@ end
 coroutine.resume(coroutine.create(SCRIPT_MMKD76_FAKESCRIPT))
 function SCRIPT_MOWM88_FAKESCRIPT() -- KillAll.KillAll 
 	local toggle = false
-	
+
 	KillAll.Activated:Connect(function()
 		local map = getMap()
-		
+
 		if findItem(ps_plr, "Knife") and map then -- Only works if you're the murderer
 			sendNoti({msg = "Killing All"})
 			local plrs_in_map = workspace:GetPartBoundsInBox(map:GetPivot(),map:GetExtentsSize()) -- So the player doesn't try to kill people in the lobby.
-			
+
 			toggle = not toggle
-			
+
 			for _, Victim in pairs(ps:GetPlayers()) do
 				if not toggle then
 					break
 				end
-				
+
 				local victim_chr = Victim.Character or Victim.CharacterAdded:Wait()
 				local hum = victim_chr:WaitForChild('Humanoid', 1) :: Humanoid or victim_chr:FindFirstChildWhichIsA('Humanoid', false)
 
@@ -682,7 +699,7 @@ function SCRIPT_MOWM88_FAKESCRIPT() -- KillAll.KillAll
 						task.wait(1)
 						stop = true
 					end)()
-					
+
 					repeat wait()
 						ps_chr:PivotTo(victim_chr:GetPivot())
 					until
@@ -699,7 +716,7 @@ function SCRIPT_FZXM74_FAKESCRIPT() -- MurdererESP.MurdererESP
 
 	MurdererESP.Activated:Connect(function()
 		toggle = not toggle
-		
+
 		if toggle then
 			sendNoti({msg = "Finding Murder"})
 			for _, Plr in pairs(ps:GetPlayers()) do
@@ -743,7 +760,7 @@ function SCRIPT_FZXM74_FAKESCRIPT() -- MurdererESP.MurdererESP
 					if beam then
 						beam:Destroy()
 					end
-					
+
 					break
 				end
 			end
@@ -811,7 +828,7 @@ coroutine.resume(coroutine.create(SCRIPT_CTQL79_FAKESCRIPT))
 function SCRIPT_XMKA81_FAKESCRIPT() -- TPtoMap.TPtoMap 
 	local Spawns = workspace:FindFirstChild('Spawns', true) :: Folder
 	local children = Spawns and Spawns:GetChildren()
-	
+
 	if children then
 		TPtoMap.Activated:Connect(function()
 			sendNoti({msg = "TP to Lobby"})
@@ -824,13 +841,13 @@ coroutine.resume(coroutine.create(SCRIPT_XMKA81_FAKESCRIPT))
 function SCRIPT_KCFZ83_FAKESCRIPT() -- TPtoMuderer.TPtoMuderer 
 	TPtoMuderer.Activated:Connect(function()	
 		sendNoti({msg = "TP to Murder"})
-		
+
 		for i, player in pairs(ps:GetPlayers()) do
 			local chr = player.Character or player.CharacterAdded:Wait()
 			local murder_root = chr:WaitForChild('HumanoidRootPart', 1) :: BasePart
-			
+
 			local knife = findItem(player, "Knife")
-			
+
 			if knife then
 				sendNoti({msg = 'TP to Murderer'})
 				ps_chr:MoveTo(murder_root.Position)
@@ -844,12 +861,13 @@ coroutine.resume(coroutine.create(SCRIPT_KCFZ83_FAKESCRIPT))
 function SCRIPT_HFLO69_FAKESCRIPT() -- TPtoSherrif.TPtoSherrif 
 	TPtoSherrif.Activated:Connect(function()	
 		sendNoti({msg = "TP To Sheriff"})
-		
+
 		for _, player in pairs(ps:GetPlayers()) do
 			local chr = player.Character or player.CharacterAdded:Wait()
 
 			if findItem(player, "Gun") then
 				ps_chr:PivotTo(chr:GetPivot())
+				break
 			end
 		end
 	end)
@@ -895,31 +913,6 @@ end)
 
 local org_gui_pos = Main.Position
 
--- Extracted data
-local owner = "Gladimore"
-local repo = "Scripts"
-local filename = "mm2.txt"
-
--- Construct the URL
-local url = string.format("https://api.github.com/repos/%s/%s/commits?path=%s&page=1&per_page=1", owner, repo, filename)
-
--- Make HTTP request
-local success, response = pcall(game.HttpGet, game, url)
-
-local credit = "Made by kyler_josiah :)"
-local credit_duration = 6
-
-if success then
-	local data = game.HttpService:JSONDecode(response)
-	
-	local committer_date = data[1].commit.committer.date
-	sendNoti({msg = credit.."\n Last Updated:"..tostring(committer_date), duration = credit_duration})
-else
-	print("Error: HTTP request failed.")
-	sendNoti({msg = credit, duration = credit_duration})
-end
-
-
 local open = true
 
 OpenClose.Activated:Connect(function()
@@ -935,4 +928,30 @@ end
 
 MM2Gui.Destroying:Once(function()
 	st:Destroy()
+end)
+
+pcall(function()
+	-- Extracted data
+	local owner = "Gladimore"
+	local repo = "Scripts"
+	local filename = "mm2.txt"
+
+	-- Construct the URL
+	local url = string.format("https://api.github.com/repos/%s/%s/commits?path=%s&page=1&per_page=1", owner, repo, filename)
+
+	-- Make HTTP request
+	local success, response = pcall(game.HttpGet, game, url)
+
+	local credit = "Made by kyler_josiah :)"
+	local credit_duration = 6
+
+	if success then
+		local data = game.HttpService:JSONDecode(response)
+
+		local committer_date = data[1].commit.committer.date
+		sendNoti({msg = credit.."\n Last Updated:"..tostring(committer_date), duration = credit_duration})
+	else
+		print("Error: HTTP request failed.")
+		sendNoti({msg = credit, duration = credit_duration})
+	end
 end)
