@@ -577,7 +577,6 @@ local function moveToCoins()
 		Tween:Play()
 		Tween.Completed:Wait()
 		con:Disconnect()
-		table.remove(coins, table.find(coins, coin))
 		setVelocity()
 
 		local function handleNext()
@@ -603,7 +602,7 @@ local function moveToCoins()
 		end)
 		
 		coroutine.wrap(function()
-			task.wait(0.5)
+			task.wait(0.3)
 			coin:Destroy()
 			
 			if not ended then
@@ -636,6 +635,8 @@ function SCRIPT_ZSRN70_FAKESCRIPT() -- CoinFarm.CoinFarm
 		elseif not coin_toggle then
 			stopCons()
 			resetPos()
+		elseif not container or (container and #container:GetChildren() == 0) then
+			sendNoti({msg = "No coin container/coins in container"})
 		end
 	end)
 
@@ -645,9 +646,9 @@ function SCRIPT_MMKD76_FAKESCRIPT() -- GunDropGrabber.GunDropGrabber
 	local org_pos = ps_chr:GetPivot()
 
 	GunDropGrabber.Activated:Connect(function()
-		local drop = workspace:FindFirstChild("GunDrop") :: BasePart
+		local drop = workspace:FindFirstChild("GunDrop", true) :: BasePart
 
-		if drop then
+		if drop and not ps_plr.Backpack:FindFirstChild('Gun') then
 			sendNoti({msg = "Grabbing Gun"})
 			org_pos = ps_chr:GetPivot()
 
@@ -658,12 +659,14 @@ function SCRIPT_MMKD76_FAKESCRIPT() -- GunDropGrabber.GunDropGrabber
 				stop = true
 			end)()
 
-			repeat task.wait() ps_chr:PivotTo(drop.Position)
-			until ps_plr.Backpack:FindFirstChild('Gun', true) or stop or not workspace:FindFirstChild('GunDrop', true)
+			repeat task.wait() ps_chr:PivotTo(drop.CFrame)
+			until ps_plr.Backpack:FindFirstChild('Gun') or stop or not workspace:FindFirstChild('GunDrop', true)
 
 			ps_chr:PivotTo(org_pos)
-		else
+		elseif not drop then
 			sendNoti({msg = "No gun drop :("})
+		elseif ps_plr.Backpack:FindFirstChild('Gun') then
+			sendNoti({msg = "You already have the gun!"})
 		end
 	end)
 
